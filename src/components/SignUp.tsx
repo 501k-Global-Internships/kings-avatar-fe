@@ -60,7 +60,7 @@ const SignUp: React.FC = () => {
       localStorage.setItem('token', response?.data?.token);
       localStorage.setItem('email', response?.data?.email);
 
-      navigate("/sign-in")
+      navigate("/")
     } catch (err) {
       const error = err as AxiosError<ErrorResponse>;
 
