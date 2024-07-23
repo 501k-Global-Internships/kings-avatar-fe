@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import DashboardHeader from './DashboardHeader';
 import SideNav from './SideNav';
 import UntitledProject from './UntitledProject';
-import AddIcon from '../assets/add.svg';
+// import AddIcon from '../assets/add.svg';
 import axios from '../api/axios';
 import { AxiosError } from 'axios';
 import { ErrorResponse } from './AppInterface';

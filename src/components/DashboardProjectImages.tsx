@@ -3,7 +3,7 @@ import DashboardHeader from './DashboardHeader';
 import SideNav from './SideNav';
 import axios from '../api/axios';
 import UntitledProject from './UntitledProject';
-import AddIcon from '../assets/add.svg';
+// import AddIcon from '../assets/add.svg';
 import { AxiosError } from 'axios';
 import { ErrorResponse } from './AppInterface';
 

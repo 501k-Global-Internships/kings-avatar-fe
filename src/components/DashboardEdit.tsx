@@ -1,4 +1,3 @@
-// DashboardEdit Component
 import React, { useRef, useState } from 'react';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -13,8 +12,8 @@ import FlipIcon from '../assets/flip.svg';
 import RotateIcon from '../assets/tabler_rotate.svg';
 
 const DashboardEdit: React.FC = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [uploadedFile, setUploadedFile] = useState<string | null>(null);
+  // const [file, setFile] = useState<File | null>(null);
+  // const [uploadedFile, setUploadedFile] = useState<string | null>(null);
   const [errMsg, setErrMsg] = useState<{ msg: string }[] | string>('');
 
   const errRef = useRef<HTMLParagraphElement>(null);
@@ -25,7 +24,7 @@ const DashboardEdit: React.FC = () => {
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      setFile(selectedFile);
+      // setFile(selectedFile);
 
       const formData = new FormData();
       formData.append('image', selectedFile);
@@ -42,7 +41,7 @@ const DashboardEdit: React.FC = () => {
         console.log(response);
         
 
-        setUploadedFile(response.data.url);
+        // setUploadedFile(response.data.url);
         navigate('/dashboard-shapes', { state: { uploadedFile: response.data.url } });
       } catch (err) {
         const error = err as AxiosError<ErrorResponse>;

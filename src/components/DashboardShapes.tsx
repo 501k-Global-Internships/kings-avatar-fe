@@ -43,37 +43,37 @@ const DashboardShapes: React.FC = () => {
     setDragging(true);
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (dragging && imgSectionRef.current) {
-      const rect = imgSectionRef.current.getBoundingClientRect();
-      let newTop = e.clientY - frameSize / 2;
-      let newLeft = e.clientX - frameSize / 2;
-
-      // Ensure the frame stays within the imgSection bounds
-      if (newTop < rect.top) newTop = rect.top;
-      if (newLeft < rect.left) newLeft = rect.left;
-      if (newTop + frameSize > rect.top + rect.height) newTop = rect.top + rect.height - frameSize;
-      if (newLeft + frameSize > rect.left + rect.width) newLeft = rect.left + rect.width - frameSize;
-
-      setFramePosition({
-        top: newTop - rect.top,
-        left: newLeft - rect.left,
-      });
-    }
-  };
-
   const handleMouseUp = () => {
     setDragging(false);
   };
 
   useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (dragging && imgSectionRef.current) {
+        const rect = imgSectionRef.current.getBoundingClientRect();
+        let newTop = e.clientY - frameSize / 2;
+        let newLeft = e.clientX - frameSize / 2;
+  
+        // Ensure the frame stays within the imgSection bounds
+        if (newTop < rect.top) newTop = rect.top;
+        if (newLeft < rect.left) newLeft = rect.left;
+        if (newTop + frameSize > rect.top + rect.height) newTop = rect.top + rect.height - frameSize;
+        if (newLeft + frameSize > rect.left + rect.width) newLeft = rect.left + rect.width - frameSize;
+  
+        setFramePosition({
+          top: newTop - rect.top,
+          left: newLeft - rect.left,
+        });
+      }
+    };
+
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [dragging]);
+  }, [dragging, frameSize]);
 
   const handleSaveProject = async () => {
     if (imgSectionRef.current) {
