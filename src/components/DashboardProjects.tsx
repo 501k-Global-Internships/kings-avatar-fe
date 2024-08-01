@@ -4,8 +4,8 @@ import SideNav from './SideNav';
 import UntitledProject from './UntitledProject';
 import { useGallery } from '../context/GalleryContext';
 
-const DashboardGallery: React.FC = () => {
-  const { galleryImages } = useGallery();
+const DashboardProjects: React.FC = () => {
+  const { projectImages } = useGallery();
 
   const getImageSizeClass = (numImages: number) => {
     if (numImages <= 4) return 'large';
@@ -13,32 +13,28 @@ const DashboardGallery: React.FC = () => {
     return 'small';
   };
 
-  const imageSizeClass = getImageSizeClass(galleryImages.length);
-
-  const handleSaveProject = async () => { };
-
-  const handleDownloadClick = () => { };
+  const imageSizeClass = getImageSizeClass(projectImages.length);
 
   return (
     <div className="container">
       <DashboardHeader />
       <div className="edit">
-      <SideNav currentTab='gallery' onDownloadClick={handleDownloadClick} />
+        <SideNav currentTab='projects' onDownloadClick={() => { }} />
         <div className="body">
           <div className="project">
-            <UntitledProject onSave={handleSaveProject} />
+            <UntitledProject onSave={() => { }} />
             <div className="cnt">
               <div className="img-section">
                 <div className="import img-box">
-                  {galleryImages.length ? (
+                  {projectImages.length ? (
                     <div className={`images ${imageSizeClass}`}>
-                      {galleryImages.map((galleryImage, i) => (
-                        <img src={galleryImage} alt="" key={i} />
+                      {projectImages.map((projectImage, i) => (
+                        <img src={projectImage} alt="" key={i} />
                       ))}
                     </div>
                   ) : (
                     <div className="no-images">
-                      <p>No Gallery Images Yet. Upload An Image And Create Your Avatar.</p>
+                      <p>No Project Images Yet. Upload An Image And Create Your Avatar.</p>
                     </div>
                   )}
                 </div>
@@ -51,4 +47,4 @@ const DashboardGallery: React.FC = () => {
   );
 };
 
-export default DashboardGallery;
+export default DashboardProjects;

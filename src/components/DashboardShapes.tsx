@@ -92,11 +92,13 @@ const DashboardShapes: React.FC = () => {
     }
   };
 
+  const handleDownloadClick = () => { };
+
   return (
     <div className="container">
       <DashboardHeader />
       <div className="edit">
-        <SideNav currentTab="shapes" />
+        <SideNav currentTab="shapes" onDownloadClick={handleDownloadClick} />
         <div className="body">
           <div className="project">
             <UntitledProject onSave={handleSaveProject} />

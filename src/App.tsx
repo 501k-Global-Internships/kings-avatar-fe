@@ -8,7 +8,7 @@ import DashboardEdit from './components/DashboardEdit';
 import DashboardShapes from './components/DashboardShapes';
 import DashboardText from './components/DashboardText';
 import DashboardGallery from './components/DashboardGallery';
-import DashboardProject from './components/DashboardProjectImages';
+import DashboardProject from './components/DashboardProjects';
 import './App.css';
 
 const App: React.FC = () => {

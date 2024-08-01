@@ -80,11 +80,13 @@ const DashboardText: React.FC = () => {
     }
   }, [frameSize, frameHeight]);
 
+  const handleDownloadClick = () => { };
+
   return (
     <div className="container">
       <DashboardHeader />
       <div className="edit">
-        <SideNav currentTab='text' />
+        <SideNav currentTab='text' onDownloadClick={handleDownloadClick} />
         <div className="body">
           <div className="project">
             <UntitledProject onSave={handleDownloadImage} />
