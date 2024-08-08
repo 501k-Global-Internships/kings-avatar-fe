@@ -23,7 +23,11 @@ const DashboardGallery: React.FC = () => {
     <div className="container">
       <DashboardHeader />
       <div className="edit">
-      <SideNav currentTab='gallery' onDownloadClick={handleDownloadClick} />
+      <SideNav currentTab='gallery' 
+      onDownloadClick={handleDownloadClick} 
+      onShapesClick={() => {}}
+      onTextsClick={() => {}}
+      />
         <div className="body">
           <div className="project">
             <UntitledProject onSave={handleSaveProject} />

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import EditIcon from '../assets/lucide_edit.svg'
 import ShapesIcon from '../assets/shapes.svg'
 import TextIcon from '../assets/ion_text.svg'
@@ -9,29 +9,32 @@ import ShareIcon from '../assets/octicon_share-24.svg'
 import { SideNavProps } from './AppInterface'
 import './SideNav.scss'
 
-const SideNav: React.FC<SideNavProps> = ({ currentTab, onDownloadClick }) => {
+const SideNav: React.FC<SideNavProps> = ({ currentTab, onDownloadClick, onShapesClick, onTextsClick }) => {
+  const navigate = useNavigate();
+
+  const handleLinkClick = () => {
+    navigate('/dashboard-edit')
+    window.location.reload();
+  };
+
   return (
     <div className="side-nav">
       <div className="nav">
         <nav>
           <ul>
             <li className={`${currentTab === 'edit' ? "active" : ""}`}>
-              <Link to="/dashboard-edit">
+              <Link to="/dashboard-edit" onClick={handleLinkClick}>
                 <img src={EditIcon} alt="" />
                 <p>Edit</p>
               </Link>
             </li>
-            <li className={`${currentTab === 'shapes' ? "active" : ""}`}>
-              <Link to="/dashboard-shapes">
+            <li className={`${currentTab === 'shapes' ? "active" : ""}`} onClick={onShapesClick}>
                 <img src={ShapesIcon} alt="" />
                 <p>Shapes</p>
-              </Link>
             </li>
-            <li className={`${currentTab === 'text' ? "active" : ""}`}>
-              <Link to="/dashboard-text">
+            <li className={`${currentTab === 'text' ? "active" : ""}`} onClick={onTextsClick}>
                 <img src={TextIcon} alt="" />
                 <p>Text</p>
-              </Link>
             </li>
             <li className={`${currentTab === 'gallery' ? "active" : ""}`}>
               <Link to="/dashboard-gallery">

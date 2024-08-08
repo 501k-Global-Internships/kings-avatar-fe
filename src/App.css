@@ -1,6 +1,10 @@
 .App {
   text-align: center;
   background: #222221;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .App-logo {

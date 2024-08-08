@@ -19,7 +19,11 @@ const DashboardProjects: React.FC = () => {
     <div className="container">
       <DashboardHeader />
       <div className="edit">
-        <SideNav currentTab='projects' onDownloadClick={() => { }} />
+        <SideNav currentTab='projects' 
+        onDownloadClick={() => { }} 
+        onShapesClick={() => {}}
+        onTextsClick={() => {}}
+        />
         <div className="body">
           <div className="project">
             <UntitledProject onSave={() => { }} />
