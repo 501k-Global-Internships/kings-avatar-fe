@@ -23,6 +23,9 @@ import { ErrorResponse, Frame, FrameType, ImageText } from './AppInterface';
 import { useGallery } from '../context/GalleryContext';
 import './App.scss';
 
+type Point = { x: number; y: number };
+type Size = { width: number; height: number };
+
 const DashboardEdit: React.FC = () => {
   const { galleryImages, setGalleryImages, projectImages, setProjectImages } = useGallery();
   const [file, setFile] = useState<File | null>(null);
@@ -30,8 +33,10 @@ const DashboardEdit: React.FC = () => {
   const [errMsg, setErrMsg] = useState<{ msg: string }[] | string>('');
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState<number>(1);
+  const [cropSize, setCropSize] = useState<Size>({ width: 200, height: 150 });
+  const [isResizing, setIsResizing] = useState(false);
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
   const [cropImage, setCropImage] = useState<Boolean>(false);
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
@@ -76,6 +81,43 @@ const DashboardEdit: React.FC = () => {
     setDragging(null);
     setResizing(null);
   };
+
+  const handleCropMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsResizing(true);
+  };
+
+  const handleCropMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isResizing) return;
+      setCropSize(prevSize => ({
+        width: Math.max(50, prevSize.width + e.movementX),
+        height: Math.max(50, prevSize.height + e.movementY),
+      }));
+    },
+    [isResizing]
+  );
+
+  const handleCropMouseUp = () => {
+    setIsResizing(false);
+  };
+
+
+  React.useEffect(() => {
+    if (isResizing) {
+      window.addEventListener('mousemove', handleCropMouseMove);
+      window.addEventListener('mouseup', handleCropMouseUp);
+    } else {
+      window.removeEventListener('mousemove', handleCropMouseMove);
+      window.removeEventListener('mouseup', handleCropMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleCropMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing, handleCropMouseMove]);
+
 
   useEffect(() => {
     const getGalleryImages = async () => {
@@ -402,35 +444,50 @@ const DashboardEdit: React.FC = () => {
                 <div className="img-section">
                   <div className="import preview" style={{ position: 'relative' }}>
                     {cropImage ?
-                      <div className="crop-container" ref={imgSectionRef}>
-                        <Cropper
-                          image={previewUrl as string}
-                          crop={crop}
-                          zoom={zoom}
-                          maxZoom={30}
-                          aspect={4 / 3}
-                          objectFit='contain'
-                          onCropChange={setCrop}
-                          onCropComplete={handleCropComplete}
-                          onZoomChange={setZoom}
-                          showGrid={true}
-                          cropShape='rect'
-                          style={{
-                            containerStyle: {
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              zIndex: 1
-                            },
-                            cropAreaStyle: {
-                              border: '2px dashed #fff',
-                              background: 'rgba(0, 0, 0, 0.2)',
-                            }
-                          }}
-                        />
-                      </div>
+                       <div className="crop-container" ref={imgSectionRef}>
+                       <Cropper
+                         image={previewUrl as string}
+                         crop={crop}
+                         zoom={zoom}
+                         cropSize={cropSize}
+                         maxZoom={30}
+                         aspect={cropSize.width / cropSize.height}
+                         objectFit="contain"
+                         onCropChange={setCrop}
+                         onCropComplete={handleCropComplete}
+                         onZoomChange={setZoom}
+                         showGrid={true}
+                         cropShape="rect"
+                         style={{
+                           containerStyle: {
+                             position: 'absolute',
+                             top: 0,
+                             left: 0,
+                             right: 0,
+                             bottom: 0,
+                             zIndex: 1,
+                           },
+                           cropAreaStyle: {
+                             border: '2px dashed #fff',
+                             background: 'rgba(0, 0, 0, 0.2)',
+                           },
+                         }}
+                       />
+                       {/* Grid node for resizing */}
+                       <div
+                         style={{
+                           position: 'absolute',
+                           top: crop.y + cropSize.height - 10,
+                           left: crop.x + cropSize.width - 10,
+                           width: '20px',
+                           height: '20px',
+                           backgroundColor: '#fff',
+                           cursor: 'nwse-resize',
+                           zIndex: 10,
+                         }}
+                         onMouseDown={handleCropMouseDown}
+                       />
+                     </div>
                       :
                       <div ref={imgSectionRef}>
                         <img
