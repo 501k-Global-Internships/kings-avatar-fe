@@ -444,57 +444,57 @@ const DashboardEdit: React.FC = () => {
                 <div className="img-section">
                   <div className="import preview" style={{ position: 'relative' }}>
                     {cropImage ?
-                       <div className="crop-container" ref={imgSectionRef}>
-                       <Cropper
-                         image={previewUrl as string}
-                         crop={crop}
-                         zoom={zoom}
-                         cropSize={cropSize}
-                         maxZoom={30}
-                         aspect={cropSize.width / cropSize.height}
-                         objectFit="contain"
-                         onCropChange={setCrop}
-                         onCropComplete={handleCropComplete}
-                         onZoomChange={setZoom}
-                         showGrid={true}
-                         cropShape="rect"
-                         style={{
-                           containerStyle: {
-                             position: 'absolute',
-                             top: 0,
-                             left: 0,
-                             right: 0,
-                             bottom: 0,
-                             zIndex: 1,
-                           },
-                           cropAreaStyle: {
-                             border: '2px dashed #fff',
-                             background: 'rgba(0, 0, 0, 0.2)',
-                           },
-                         }}
-                       />
-                       {/* Grid node for resizing */}
-                       <div
-                         style={{
-                           position: 'absolute',
-                           top: crop.y + cropSize.height - 10,
-                           left: crop.x + cropSize.width - 10,
-                           width: '20px',
-                           height: '20px',
-                           backgroundColor: '#fff',
-                           cursor: 'nwse-resize',
-                           zIndex: 10,
-                         }}
-                         onMouseDown={handleCropMouseDown}
-                       />
-                     </div>
+                      <div className="crop-container" ref={imgSectionRef}>
+                        <Cropper
+                          image={previewUrl as string}
+                          crop={crop}
+                          zoom={zoom}
+                          cropSize={cropSize}
+                          maxZoom={30}
+                          aspect={cropSize.width / cropSize.height}
+                          objectFit="contain"
+                          onCropChange={setCrop}
+                          onCropComplete={handleCropComplete}
+                          onZoomChange={setZoom}
+                          showGrid={true}
+                          cropShape="rect"
+                          style={{
+                            containerStyle: {
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              zIndex: 1,
+                            },
+                            cropAreaStyle: {
+                              border: '2px dashed #fff',
+                              background: 'rgba(0, 0, 0, 0.2)',
+                            },
+                          }}
+                        />
+                        {/* Grid node for resizing */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: crop.y + cropSize.height - 10,
+                            left: crop.x + cropSize.width - 10,
+                            width: '20px',
+                            height: '20px',
+                            backgroundColor: '#fff',
+                            cursor: 'nwse-resize',
+                            zIndex: 10,
+                          }}
+                          onMouseDown={handleCropMouseDown}
+                        />
+                      </div>
                       :
-                      <div ref={imgSectionRef}>
+                      <div className="img-container" ref={imgSectionRef}>
                         <img
-                          src={croppedImageUrl || (previewUrl as string)}
+                          src={croppedImageUrl ? croppedImageUrl : (previewUrl as string)}
                           alt="Uploaded"
                           className="main-image"
-                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                         {frames.map(frame => (
                           <div
@@ -620,7 +620,7 @@ const DashboardEdit: React.FC = () => {
                       </div>
                     }
                   </div>
-                  <div>
+                  <div className='action-center'>
                     <div className="more-actions">
                       <div className={`change-photo ${changePhoto ? '' : 'hidden'}`}>
                         <button
