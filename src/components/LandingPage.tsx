@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import Header from './Header'
 import userIcon from '../assets/user.svg';
+import { LandingPageProps } from './AppInterface';
+import LoginSignUpModal from './LoginSignUpModal';
 import logo1 from '../assets/logo1.svg';
 import logo2 from '../assets/logo2.svg';
 import arrows from '../assets/arrows.svg';
@@ -21,10 +23,17 @@ import instagram from '../assets/instagram.svg';
 import fb from '../assets/fb.svg';
 import linkedin from '../assets/linkedin.svg';
 
-const LandingPage: React.FC = () => {
+const LandingPage: React.FC<LandingPageProps> = ({ LoginSIgnUp }) => {
+  const [loginSignUp, setLoginSignUp] = useState<boolean>(false);
+
+  const closeModal = () => {
+    setLoginSignUp(false);
+  };
+
   return (
     <div className="container landing">
-      <Header />
+      <Header loginSignUp={loginSignUp} setLoginSignUp={setLoginSignUp} />
+      {loginSignUp && <LoginSignUpModal  closeModal={closeModal} />}
       <div className="sign-up dash">
         <div className="content">
           <div className="body-text">
@@ -189,25 +198,25 @@ const LandingPage: React.FC = () => {
                     <li>
                       <div className="img">
                         <img src={instagram} alt="" />
-                        <p>Instagram</p>
+                        <Link to="">Instagram</Link>
                       </div>
                     </li>
                     <li>
                       <div className="img">
                         <img src={x} alt="" />
-                        <p>Twitter</p>
+                        <Link to="">Twitter</Link>
                       </div>
                     </li>
                     <li>
                       <div className="img">
                         <img src={fb} alt="" />
-                        <p>Facebook</p>
+                        <Link to="">Facebook</Link>
                       </div>
                     </li>
                     <li>
                       <div className="img">
                         <img src={linkedin} alt="" />
-                        <p>LinkedIn</p>
+                        <Link to="">LinkedIn</Link>
                       </div>
                     </li>
                   </ul>

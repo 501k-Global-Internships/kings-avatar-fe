@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
+import { HeaderProps } from './AppInterface';
 import './Header.scss';
 
-const Header: React.FC = () => {
+const Header: React.FC<HeaderProps> = ({ loginSignUp, setLoginSignUp }) => {
   const [selectedLink, setSelectedLink] = useState<string>('home');
 
   return (
@@ -26,7 +27,10 @@ const Header: React.FC = () => {
           </nav>
         </div>
         <div className="get-started">
-          <p><Link to="">Get Started <FontAwesomeIcon className="icon" icon={faAngleDown} /></Link></p>
+          <p onClick={() => setLoginSignUp(!loginSignUp)}>
+            Get Started
+            <FontAwesomeIcon className="icon" icon={loginSignUp ? faAngleUp : faAngleDown} />
+          </p>
         </div>
       </div>
     </header>

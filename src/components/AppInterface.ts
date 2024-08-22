@@ -23,3 +23,17 @@ export interface ImageText {
   textFrameHeight: number;
   framePosition: { top: number; left: number };
 }
+
+export interface LandingPageProps {
+  LoginSIgnUp?: React.FC;
+}
+
+export interface HeaderProps {
+  loginSignUp: boolean;
+  setLoginSignUp: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface LoginSignUpModalProps {
+  closeModal: () => void;
+}
+

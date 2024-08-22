@@ -2,7 +2,6 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 5rem;
   height: 9.5%;
 
   .header {
@@ -89,25 +88,25 @@ header {
       display: flex;
       justify-content: center;
       align-items: center;
-     
       height: 2.3rem;
 
       p {
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
         height: 100%;
         width: 11rem;
         border-radius: 1.438rem;
         background-color: #3183ff;
+        text-decoration: none;
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 15px;
+        line-height: 1.295rem;
+        text-align: center;
 
-        a {
-          text-decoration: none;
-          color: #ffffff;
-          font-weight: 500;
-          font-size: 15px;
-          line-height: 1.295rem;
-          text-align: center;
+        .icon {
+          margin-left: 1rem;
         }
       }
 

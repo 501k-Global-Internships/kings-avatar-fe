@@ -61,7 +61,7 @@ const SignIp: React.FC = () => {
 
   return (
     <div className="container">
-      <Header />
+      <Header loginSignUp={false} setLoginSignUp={() => {}}/>
       <div className="sign-up">
         <div className="content">
           <div className="body-text">
