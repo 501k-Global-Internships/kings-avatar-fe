@@ -12,7 +12,7 @@ header {
     width: 90%;
 
     .header-title {
-      width: 11rem;
+      width: auto;
       height: 2.438rem;
       text-align: left;
 
@@ -30,7 +30,7 @@ header {
     }
 
     .nav {
-      width: 11rem;
+      width: auto;
       padding: 6px, 8px, 6px, 8px;
 
       nav {
@@ -89,7 +89,7 @@ header {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 11rem;
+     
       height: 2.3rem;
 
       p {
@@ -97,7 +97,7 @@ header {
         justify-content: center;
         align-items: center;
         height: 100%;
-        width: 100%;
+        width: 11rem;
         border-radius: 1.438rem;
         background-color: #3183ff;
 

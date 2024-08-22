@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import LandingPage from './components/LandingPage';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import SignUpSuccessful from './components/SignUpSuccessful';
@@ -13,8 +14,9 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/" element={<SignIn />} />
+        <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up-success" element={<SignUpSuccessful />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard-edit" element={<DashboardEdit />} />
