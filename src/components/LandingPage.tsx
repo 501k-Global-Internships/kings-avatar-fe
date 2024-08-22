@@ -25,7 +25,7 @@ const LandingPage: React.FC = () => {
   return (
     <div className="container landing">
       <Header />
-      <div className="sign-up">
+      <div className="sign-up dash">
         <div className="content">
           <div className="body-text">
             <h1>Unleash Your</h1>

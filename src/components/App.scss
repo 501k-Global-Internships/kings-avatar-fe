@@ -1,20 +1,26 @@
 .container {
   height: 100vh;
-  display: block;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   &.landing {
     overflow: scroll;
+    display: block;
   }
 
   .sign-up {
+    flex: 1;
     display: flex;
     background-image: url("../assets/Ellipse1.svg");
     background-size: 45%;
     background-position: right 35px;
     background-repeat: no-repeat;
     z-index: 1;
-    height: calc(100vh - 5.1rem);
+    box-sizing: border-box;
+
+    &.dash {
+      height: calc(100vh - 5.1rem);
+    }
 
     .content {
       display: flex;
@@ -814,11 +820,12 @@
   }
 
   .edit {
+    flex: 1;
     display: flex;
     height: calc(100vh - 5.1rem);
     height: 90%;
     background-color: #1e1e1f;
-
+    border: 1px solid red;
     .body {
       width: 88%;
       padding: 1.25rem 2.5rem;
