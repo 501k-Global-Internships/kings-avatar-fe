@@ -802,12 +802,22 @@
                     align-items: center;
                     justify-content: space-between;
 
-                    p {
-                      margin: 0;
+                    a {
+                      line-height: 1;
+                      text-decoration: none;
+                      display: block;
+                      color: #ffffff;
+                      text-decoration: none;
+                      position: relative;
+                      border-top: 1px solid transparent;
+                      border-bottom: 1px solid transparent;
                       margin-left: 1rem;
-                      padding: 0;
                       font-size: 16px;
-                      color: #fff;
+                      cursor: pointer;
+  
+                      &:hover {
+                        text-decoration: underline;
+                      }
                     }
                   }
                 }
