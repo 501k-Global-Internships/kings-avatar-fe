@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Cropper from 'react-easy-crop';
-import { Area } from 'react-easy-crop/types';
 import { AxiosError } from 'axios';
 import html2canvas from 'html2canvas';
 import Draggable from 'react-draggable';
@@ -9,7 +7,6 @@ import DashboardHeader from './DashboardHeader';
 import SideNav from './SideNav';
 import UntitledProject from './UntitledProject';
 import AddIcon from '../assets/add.svg';
-import CropIcon from '../assets/crop.svg';
 import FlipIcon from '../assets/flip.svg';
 import RotateIcon from '../assets/tabler_rotate.svg';
 import GalleryIcon from '../assets/tabler_photo.svg';
@@ -23,9 +20,6 @@ import { ErrorResponse, Frame, FrameType, ImageText } from './AppInterface';
 import { useGallery } from '../context/GalleryContext';
 import './App.scss';
 
-type Point = { x: number; y: number };
-type Size = { width: number; height: number };
-
 const DashboardEdit: React.FC = () => {
   const { galleryImages, setGalleryImages, projectImages, setProjectImages } = useGallery();
   const [file, setFile] = useState<File | null>(null);
@@ -33,12 +27,6 @@ const DashboardEdit: React.FC = () => {
   const [errMsg, setErrMsg] = useState<{ msg: string }[] | string>('');
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
-  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState<number>(1);
-  const [cropSize, setCropSize] = useState<Size>({ width: 200, height: 150 });
-  const [isResizing, setIsResizing] = useState(false);
-  const [croppedArea, setCroppedArea] = useState<Area | null>(null);
-  const [cropImage, setCropImage] = useState<Boolean>(false);
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
 
   const [flip, setFlip] = useState<boolean>(false);
@@ -81,43 +69,6 @@ const DashboardEdit: React.FC = () => {
     setDragging(null);
     setResizing(null);
   };
-
-  const handleCropMouseDown = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsResizing(true);
-  };
-
-  const handleCropMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!isResizing) return;
-      setCropSize(prevSize => ({
-        width: Math.max(50, prevSize.width + e.movementX),
-        height: Math.max(50, prevSize.height + e.movementY),
-      }));
-    },
-    [isResizing]
-  );
-
-  const handleCropMouseUp = () => {
-    setIsResizing(false);
-  };
-
-
-  React.useEffect(() => {
-    if (isResizing) {
-      window.addEventListener('mousemove', handleCropMouseMove);
-      window.addEventListener('mouseup', handleCropMouseUp);
-    } else {
-      window.removeEventListener('mousemove', handleCropMouseMove);
-      window.removeEventListener('mouseup', handleCropMouseUp);
-    }
-
-    return () => {
-      window.removeEventListener('mousemove', handleCropMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isResizing, handleCropMouseMove]);
-
 
   useEffect(() => {
     const getGalleryImages = async () => {
@@ -223,7 +174,6 @@ const DashboardEdit: React.FC = () => {
         });
 
         setPreviewUrl(response.data.url);
-        // navigate('/dashboard-shapes', { state: { uploadedFile: response.data.url } });
       } catch (err) {
         const error = err as AxiosError<ErrorResponse>;
 
@@ -243,58 +193,6 @@ const DashboardEdit: React.FC = () => {
     }
   };
 
-  const handleCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
-    setCroppedArea(croppedAreaPixels);
-  }, []);
-
-  const getCroppedImg = (imageSrc: string, pixelCrop: Area): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const image = new Image();
-      image.src = imageSrc;
-      image.crossOrigin = 'anonymous'; // Add this line
-      image.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        canvas.width = pixelCrop.width;
-        canvas.height = pixelCrop.height;
-
-        ctx.drawImage(
-          image,
-          pixelCrop.x,
-          pixelCrop.y,
-          pixelCrop.width,
-          pixelCrop.height,
-          0,
-          0,
-          pixelCrop.width,
-          pixelCrop.height
-        );
-
-        const dataUrl = canvas.toDataURL('image/jpeg');
-        resolve(dataUrl);
-      };
-      image.onerror = (error) => reject(error);
-    });
-  };
-
-  const handleCropButtonClick = async () => {
-    setCropImage(!cropImage);
-    setFlip(false)
-    setChangePhoto(false)
-    if (croppedArea && previewUrl) {
-      try {
-        const croppedImage = await getCroppedImg(previewUrl, croppedArea);
-        console.log(croppedImage, 'here');
-        setCroppedImageUrl(croppedImage);
-
-      } catch (error) {
-        console.error('Failed to crop image:', error);
-      }
-    }
-  };
-
   const handleDownloadClick = async () => {
     if (croppedImageUrl) {
       const canvas = await html2canvas(imgSectionRef.current as HTMLElement);
@@ -310,7 +208,7 @@ const DashboardEdit: React.FC = () => {
     return new Promise((resolve, reject) => {
       const image = new Image();
       image.src = imageSrc;
-      image.crossOrigin = 'anonymous'; // Add this line if you encounter CORS issues
+      image.crossOrigin = 'anonymous';
       image.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -434,6 +332,7 @@ const DashboardEdit: React.FC = () => {
           currentTab={shapes ? 'shapes' : texts ? 'text' : 'edit'}
           onDownloadClick={handleDownloadClick}
           onShapesClick={() => { setShapes(!shapes); setTexts(false) }}
+          onEditClick={() => { setShapes(false); setTexts(false) }}
           onTextsClick={() => { setTexts(!texts); setShapes(false) }}
         />
         <div className="body">
@@ -442,183 +341,153 @@ const DashboardEdit: React.FC = () => {
             {file || previewUrl ?
               <div className="cnt">
                 <div className="img-section">
+                  {Array.isArray(errMsg) ? (
+                    errMsg.map((error, index) => (
+                      <p key={index}
+                        ref={index === 0 ? errRef : null}
+                        className={errMsg ? "errmsg" : "offscreen"}
+                        aria-live="assertive">
+                        {error.msg}
+                      </p>
+                    ))
+                  ) : (
+                    <p
+                      ref={errRef}
+                      className={errMsg ? "errmsg" : "offscreen"}
+                      aria-live="assertive">
+                      {errMsg}
+                    </p>
+                  )}
                   <div className="import preview" style={{ position: 'relative' }}>
-                    {cropImage ?
-                      <div className="crop-container" ref={imgSectionRef}>
-                        <Cropper
-                          image={previewUrl as string}
-                          crop={crop}
-                          zoom={zoom}
-                          cropSize={cropSize}
-                          maxZoom={30}
-                          aspect={cropSize.width / cropSize.height}
-                          objectFit="contain"
-                          onCropChange={setCrop}
-                          onCropComplete={handleCropComplete}
-                          onZoomChange={setZoom}
-                          showGrid={true}
-                          cropShape="rect"
-                          style={{
-                            containerStyle: {
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              zIndex: 1,
-                            },
-                            cropAreaStyle: {
-                              border: '2px dashed #fff',
-                              background: 'rgba(0, 0, 0, 0.2)',
-                            },
-                          }}
-                        />
-                        {/* Grid node for resizing */}
+                    <div className="img-container" ref={imgSectionRef}>
+                      <img
+                        src={croppedImageUrl ? croppedImageUrl : (previewUrl as string)}
+                        alt="Uploaded"
+                        className="main-image"
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                      />
+                      {frames.map(frame => (
                         <div
+                          key={frame.id}
+                          className="frame-section"
                           style={{
                             position: 'absolute',
-                            top: crop.y + cropSize.height - 10,
-                            left: crop.x + cropSize.width - 10,
-                            width: '20px',
-                            height: '20px',
-                            backgroundColor: '#fff',
-                            cursor: 'nwse-resize',
-                            zIndex: 10,
+                            top: frame.framePosition.top,
+                            left: frame.framePosition.left,
                           }}
-                          onMouseDown={handleCropMouseDown}
-                        />
-                      </div>
-                      :
-                      <div className="img-container" ref={imgSectionRef}>
-                        <img
-                          src={croppedImageUrl ? croppedImageUrl : (previewUrl as string)}
-                          alt="Uploaded"
-                          className="main-image"
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                        {frames.map(frame => (
-                          <div
-                            key={frame.id}
-                            className="frame-section"
+                          onMouseDown={(e) => setFrameAppear(false)}
+                          onMouseUp={(e) => setFrameAppear(true)}
+                        >
+                          <div className={frameAppear ? 'frame-border hide' : 'frame-border'}
                             style={{
-                              position: 'absolute',
-                              top: frame.framePosition.top,
-                              left: frame.framePosition.left,
+                              width: frame.type === 'square' ? (frame.frameSize + 10) : frame.frameSize,
+                              height: frame.type === 'square' ? (frame.frameSize + 10) : frame.frameSize,
                             }}
-                            onMouseDown={(e) => setFrameAppear(false)}
-                            onMouseUp={(e) => setFrameAppear(true)}
+                            onMouseDown={() => handleResizeMouseDown(frame.id)}
                           >
-                            <div className={frameAppear ? 'frame-border hide' : 'frame-border'}
+                            <div className={`frame ${frame.type}`}
                               style={{
-                                width: frame.type === 'square' ? (frame.frameSize + 10) : frame.frameSize,
-                                height: frame.type === 'square' ? (frame.frameSize + 10) : frame.frameSize,
+                                width: frame.frameSize,
+                                height: frame.frameSize,
+                                borderRadius: frame.type === 'circle' ? '50%' : '0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                overflow: 'hidden',
+                                cursor: 'move',
                               }}
-                              onMouseDown={() => handleResizeMouseDown(frame.id)}
+                              onMouseDown={(e) => handleMouseDown(frame.id)}
                             >
-                              <div className={`frame ${frame.type}`}
+                              {frame.innerImage ? (
+                                <img
+                                  src={frame.innerImage}
+                                  alt="Inner"
+                                  className="inner-image"
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                    borderRadius: frame.type === 'circle' ? '50%' : '0',
+                                  }}
+                                />
+                              ) : (
+                                <div>
+                                  <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, frame.id)}
+                                    style={{ display: 'none' }}
+                                    id={`innerImageInput-${frame.id}`}
+                                  />
+                                  <label htmlFor={`innerImageInput-${frame.id}`} className="upload-btn">
+                                    <img src={AddIcon} alt="" />
+                                  </label>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => handleRemoveFrame(frame.id)}
+                            className={frameAppear ? 'hide' : ''}
+                          >
+                            <img className="remove" src={RemoveIcon} alt="" />
+                          </button>
+                        </div>
+                      ))}
+                      {textFrames.map(textFrame => (
+                        <div
+                          key={textFrame.id}
+                          style={{
+                            position: 'absolute',
+                            top: textFrame.framePosition.top,
+                            left: textFrame.framePosition.left,
+                          }}
+                        >
+                          <Draggable
+                            onStart={() => setTextFrameAppear(false)}
+                            onDrag={() => setTextFrameAppear(true)}
+                          >
+                            <div className="text-frame"
+                              style={{
+                                width: `${textFrame.textFrameSize + 30}px`,
+                              }}
+                            >
+                              <div className="frame"
+                                ref={textRef}
                                 style={{
-                                  width: frame.frameSize,
-                                  height: frame.frameSize,
-                                  borderRadius: frame.type === 'circle' ? '50%' : '0',
+                                  width: `${textFrame.textFrameSize}px`,
+                                  height: `${textFrame.textFrameHeight}px`,
+                                  paddingTop: 10,
+                                  paddingBottom: 12,
+                                  border: textFrameAppear === true || null ? '1px solid #3183FF' : 'none',
+                                  resize: textFrameAppear === true || null ? 'both' : 'none',
+                                  overflow: 'auto',
+                                  background: 'none',
+                                  color: 'white',
+                                  fontWeight: '500',
+                                  lineHeight: '10px',
+                                  outline: 'none',
+                                  textAlign: 'center',
+                                  textDecoration: 'none',
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
-                                  overflow: 'hidden',
-                                  cursor: 'move',
                                 }}
-                                onMouseDown={(e) => handleMouseDown(frame.id)}
+                                contentEditable
+                                suppressContentEditableWarning={true}
                               >
-                                {frame.innerImage ? (
-                                  <img
-                                    src={frame.innerImage}
-                                    alt="Inner"
-                                    className="inner-image"
-                                    style={{
-                                      width: '100%',
-                                      height: '100%',
-                                      objectFit: 'cover',
-                                      borderRadius: frame.type === 'circle' ? '50%' : '0',
-                                    }}
-                                  />
-                                ) : (
-                                  <div>
-                                    <input
-                                      type="file"
-                                      onChange={(e) => handleFileChange(e, frame.id)}
-                                      style={{ display: 'none' }}
-                                      id={`innerImageInput-${frame.id}`}
-                                    />
-                                    <label htmlFor={`innerImageInput-${frame.id}`} className="upload-btn">
-                                      <img src={AddIcon} alt="" />
-                                    </label>
-                                  </div>
-                                )}
+                                TEXT HERE
                               </div>
+                              <button
+                                onClick={() => handleRemoveTextFrame(textFrame.id)}
+                                className={textFrameAppear === true || null ? 'btn' : 'btn hide'}
+                              >
+                                <img className="remove" src={RemoveIcon} alt="" />
+                              </button>
                             </div>
-                            <button
-                              onClick={() => handleRemoveFrame(frame.id)}
-                              className={frameAppear ? 'hide' : ''}
-                            >
-                              <img className="remove" src={RemoveIcon} alt="" />
-                            </button>
-                          </div>
-                        ))}
-                        {textFrames.map(textFrame => (
-                          <div
-                            key={textFrame.id}
-                            style={{
-                              position: 'absolute',
-                              top: textFrame.framePosition.top,
-                              left: textFrame.framePosition.left,
-                            }}
-                          >
-                            <Draggable
-                              onStart={() => setTextFrameAppear(false)}
-                              onDrag={() => setTextFrameAppear(true)}
-                            >
-                              <div className="text-frame"
-                                style={{
-                                  width: `${textFrame.textFrameSize + 30}px`,
-                                }}
-                              >
-                                <div className="frame"
-                                  ref={textRef}
-                                  style={{
-                                    width: `${textFrame.textFrameSize}px`,
-                                    height: `${textFrame.textFrameHeight}px`,
-                                    paddingTop: 10,
-                                    paddingBottom: 12,
-                                    border: textFrameAppear === true || null ? '1px solid #3183FF' : 'none',
-                                    resize: textFrameAppear === true || null ? 'both' : 'none',
-                                    overflow: 'auto',
-                                    background: 'none',
-                                    color: 'white',
-                                    fontWeight: '500',
-                                    lineHeight: '10px',
-                                    outline: 'none',
-                                    textAlign: 'center',
-                                    textDecoration: 'none',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                  }}
-                                  contentEditable
-                                  suppressContentEditableWarning={true}
-                                >
-                                  TEXT HERE
-                                </div>
-                                <button
-                                  onClick={() => handleRemoveTextFrame(textFrame.id)}
-                                  className={textFrameAppear === true || null ? 'btn' : 'btn hide'}
-                                >
-                                  <img className="remove" src={RemoveIcon} alt="" />
-                                </button>
-                              </div>
-                            </Draggable>
-                          </div>
-                        ))}
-                      </div>
-                    }
+                          </Draggable>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <div className='action-center'>
                     <div className="more-actions">
@@ -671,7 +540,7 @@ const DashboardEdit: React.FC = () => {
                           <img src={CircleIcon} alt="" />
                           <p>Circle</p>
                         </button>
-                        <button className="rotate" onClick={() => handleFrameTypeChange('square')}>
+                        <button className="rotate square" onClick={() => handleFrameTypeChange('square')}>
                           <img src={SquareIcon} alt="" />
                           <p>Square</p>
                         </button>
@@ -683,28 +552,25 @@ const DashboardEdit: React.FC = () => {
                             <img src={FontIcon} alt="" />
                             <p>Font</p>
                           </button>
-                          <button className="rotate">
+                          <button className="rotate square">
                             <img src={TextEffectsIcon} alt="" />
                             <p>Effects</p>
                           </button>
                         </div>
                         :
                         <div className="actions size-slider">
-                          <button className="crop" onClick={handleCropButtonClick}>
-                            <img src={CropIcon} alt="" />
-                            <p>Crop</p>
-                          </button>
                           <button
                             className="flip"
                             onClick={() => {
                               setFlip(!flip);
                               setChangePhoto(false);
+                              setIsVisible(false);
                             }}
                           >
                             <img src={FlipIcon} alt="" />
                             <p>Flip</p>
                           </button>
-                          <button className="rotate" onClick={() => handleRotate(90)}>
+                          <button className="rotate" onClick={() =>{ handleRotate(90); setIsVisible(false);}}>
                             <img src={RotateIcon} alt="" />
                             <p>Rotate</p>
                           </button>
@@ -772,20 +638,6 @@ const DashboardEdit: React.FC = () => {
                       </label>
                       <input type="file" id="fileInput" style={{ display: 'none', cursor: 'pointer' }} onChange={onFileChange} />
                     </div>
-                  </div>
-                  <div className="actions">
-                    <button className="crop">
-                      <img src={CropIcon} alt="" />
-                      <p>Crop</p>
-                    </button>
-                    <button className="flip">
-                      <img src={FlipIcon} alt="" />
-                      <p>Flip</p>
-                    </button>
-                    <button className="rotate">
-                      <img src={RotateIcon} alt="" />
-                      <p>Rotate</p>
-                    </button>
                   </div>
                 </div>
                 <div className={`gallery-images ${isVisible ? '' : 'hidden'}`}>

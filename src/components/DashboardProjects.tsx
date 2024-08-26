@@ -23,6 +23,7 @@ const DashboardProjects: React.FC = () => {
         onDownloadClick={() => { }} 
         onShapesClick={() => {}}
         onTextsClick={() => {}}
+        onEditClick={() => {}}
         />
         <div className="body">
           <div className="project">

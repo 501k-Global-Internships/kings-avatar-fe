@@ -7,6 +7,7 @@ export interface SideNavProps {
   onDownloadClick: () => void;
   onShapesClick: () => void;
   onTextsClick: () => void;
+  onEditClick: () => void;
 }
 
 export type FrameType = 'circle' | 'square';

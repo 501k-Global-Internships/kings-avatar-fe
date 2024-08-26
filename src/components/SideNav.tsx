@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import EditIcon from '../assets/lucide_edit.svg'
 import ShapesIcon from '../assets/shapes.svg'
 import TextIcon from '../assets/ion_text.svg'
@@ -9,21 +9,15 @@ import ShareIcon from '../assets/octicon_share-24.svg'
 import { SideNavProps } from './AppInterface'
 import './SideNav.scss'
 
-const SideNav: React.FC<SideNavProps> = ({ currentTab, onDownloadClick, onShapesClick, onTextsClick }) => {
-  const navigate = useNavigate();
-
-  const handleLinkClick = () => {
-    navigate('/dashboard-edit')
-    window.location.reload();
-  };
+const SideNav: React.FC<SideNavProps> = ({ currentTab, onDownloadClick, onShapesClick, onTextsClick, onEditClick }) => {
 
   return (
     <div className="side-nav">
       <div className="nav">
         <nav>
           <ul>
-            <li className={`${currentTab === 'edit' ? "active" : ""}`}>
-              <Link to="/dashboard-edit" onClick={handleLinkClick}>
+            <li className={`${currentTab === 'edit' ? "active" : ""}`} onClick={onEditClick}>
+              <Link to="/dashboard-edit">
                 <img src={EditIcon} alt="" />
                 <p>Edit</p>
               </Link>
