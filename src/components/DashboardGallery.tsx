@@ -27,6 +27,7 @@ const DashboardGallery: React.FC = () => {
       onDownloadClick={handleDownloadClick} 
       onShapesClick={() => {}}
       onTextsClick={() => {}}
+      onEditClick={() => {}}
       />
         <div className="body">
           <div className="project">
