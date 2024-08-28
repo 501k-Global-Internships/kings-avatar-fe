@@ -23,22 +23,22 @@ const SideNav: React.FC<SideNavProps> = ({ currentTab, onDownloadClick, onShapes
               </Link>
             </li>
             <li className={`${currentTab === 'shapes' ? "active" : ""}`} onClick={onShapesClick}>
-                <img src={ShapesIcon} alt="" />
-                <p>Shapes</p>
+              <img src={ShapesIcon} alt="" />
+              <p>Shapes</p>
             </li>
             <li className={`${currentTab === 'text' ? "active" : ""}`} onClick={onTextsClick}>
-                <img src={TextIcon} alt="" />
-                <p>Text</p>
+              <img src={TextIcon} alt="" />
+              <p>Text</p>
+            </li>
+            <li className={`${currentTab === 'download' ? "active" : ""}`} onClick={onDownloadClick}>
+              <img src={DownloadIcon} alt="" />
+              <p>Download</p>
             </li>
             <li className={`${currentTab === 'gallery' ? "active" : ""}`}>
               <Link to="/dashboard-gallery">
                 <img src={GalleryIcon} alt="" />
                 <p>Gallery</p>
               </Link>
-            </li>
-            <li className={`${currentTab === 'download' ? "active" : ""}`} onClick={onDownloadClick}>
-              <img src={DownloadIcon} alt="" />
-              <p>Download</p>
             </li>
             <li className={`${currentTab === 'projects' ? "active" : ""}`}>
               <Link to="/dashboard-projects">

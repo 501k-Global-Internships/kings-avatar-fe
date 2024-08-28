@@ -61,7 +61,7 @@ const SignIp: React.FC = () => {
 
   return (
     <div className="container">
-      <Header loginSignUp={false} setLoginSignUp={() => {}}/>
+      <Header loginSignUp={false} setLoginSignUp={() => {}} selectedLink=''/>
       <div className="sign-up">
         <div className="content">
           <div className="body-text">

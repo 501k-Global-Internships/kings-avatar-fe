@@ -25,13 +25,14 @@ export interface ImageText {
   framePosition: { top: number; left: number };
 }
 
-export interface LandingPageProps {
-  LoginSIgnUp?: React.FC;
-}
-
 export interface HeaderProps {
   loginSignUp: boolean;
   setLoginSignUp: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedLink: string
+}
+
+export interface FooterProps {
+  backgroundImage: boolean;
 }
 
 export interface LoginSignUpModalProps {

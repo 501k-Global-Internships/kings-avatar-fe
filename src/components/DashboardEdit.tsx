@@ -579,6 +579,7 @@ const DashboardEdit: React.FC = () => {
                             onClick={() => {
                               setChangePhoto(!changePhoto);
                               setFlip(false);
+                              setIsVisible(false);
                             }}
                           >
                             <img src={GalleryIcon} alt="" />

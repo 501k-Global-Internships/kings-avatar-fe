@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import Header from './Header'
 import userIcon from '../assets/user.svg';
-import { LandingPageProps } from './AppInterface';
 import LoginSignUpModal from './LoginSignUpModal';
 import logo1 from '../assets/logo1.svg';
 import logo2 from '../assets/logo2.svg';
@@ -18,12 +17,9 @@ import circleGroup4 from '../assets/circle-group-4.svg'
 import join from '../assets/join.svg'
 import groupImage from '../assets/group.svg'
 import kingsAvatar from '../assets/kings-avatar.svg'
-import x from '../assets/x-twitter.svg';
-import instagram from '../assets/instagram.svg';
-import fb from '../assets/fb.svg';
-import linkedin from '../assets/linkedin.svg';
+import Footer from './Footer';
 
-const LandingPage: React.FC<LandingPageProps> = ({ LoginSIgnUp }) => {
+const LandingPage: React.FC = () => {
   const [loginSignUp, setLoginSignUp] = useState<boolean>(false);
 
   const closeModal = () => {
@@ -32,8 +28,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ LoginSIgnUp }) => {
 
   return (
     <div className="container landing">
-      <Header loginSignUp={loginSignUp} setLoginSignUp={setLoginSignUp} />
-      {loginSignUp && <LoginSignUpModal  closeModal={closeModal} />}
+      <Header loginSignUp={loginSignUp} setLoginSignUp={setLoginSignUp} selectedLink='home' />
+      {loginSignUp && <LoginSignUpModal closeModal={closeModal} />}
       <div className="sign-up dash">
         <div className="content">
           <div className="body-text">
@@ -52,7 +48,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ LoginSIgnUp }) => {
           <div className="explore">
             <div className="exp-content">
               <div className="exp">
-                <p>EXPLORE</p>
+                <h6>EXPLORE</h6>
                 <img src={arrows} alt="" />
               </div>
             </div>
@@ -172,59 +168,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ LoginSIgnUp }) => {
             </div>
           </div>
         </div>
-        <div className="footer">
-          <div className="container">
-            <div className="bg">
-              <div className="content">
-                <div className="links">
-                  <ul>
-                    <li><h4>Company</h4></li>
-                    <li><Link to="">Home</Link></li>
-                    <li><Link to="">About Us</Link></li>
-                    <li><Link to="">FAQs</Link></li>
-                  </ul>
-                </div>
-                <div className="links">
-                  <ul>
-                    <li><h4>Services</h4></li>
-                    <li><Link to="">Menu</Link></li>
-                    <li><Link to="">Support</Link></li>
-                    <li><Link to="">Geolocator</Link></li>
-                  </ul>
-                </div>
-                <div className="links">
-                  <ul>
-                    <li><h4>Our Socials</h4></li>
-                    <li>
-                      <div className="img">
-                        <img src={instagram} alt="" />
-                        <Link to="">Instagram</Link>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="img">
-                        <img src={x} alt="" />
-                        <Link to="">Twitter</Link>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="img">
-                        <img src={fb} alt="" />
-                        <Link to="">Facebook</Link>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="img">
-                        <img src={linkedin} alt="" />
-                        <Link to="">LinkedIn</Link>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Footer backgroundImage={true}  />
       </div>
     </div>
   )
