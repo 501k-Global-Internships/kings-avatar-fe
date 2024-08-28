@@ -1,31 +1,29 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { AxiosError } from 'axios';
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import Header from './Header'
+import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
+import { AxiosError } from 'axios';
 import { ErrorResponse } from './AppInterface';
-import Header from './Header';
-import googleIcon from '../assets/google.svg';
-import facebookIcon from '../assets/facebook.svg';
 import userIcon from '../assets/user.svg';
 import logo1 from '../assets/logo1.svg';
 import logo2 from '../assets/logo2.svg';
-import './App.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
-const SignUp: React.FC = () => {
+const ResetPassword: React.FC = () => {
   const PWD_REGEX = useMemo(() => /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/, []);
+  const [newPassword, setNewPassword] = useState<string>('')
+  const [confirmPassword, setConfirmPassword] = useState<string>('')
+
+  const [passwordFocus, setPasswordFocus] = useState<Boolean>(false);
+  const [validPassword, setValidPassword] = useState<Boolean>(false);
+
   const [passwordVisible, setPasswordVisible] = useState<Boolean>(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState<Boolean>(false);
 
-  const [password, setPassword] = useState<string>('');
-  const [validPassword, setValidPassword] = useState<Boolean>(false);
-  const [passwordFocus, setPasswordFocus] = useState<Boolean>(false);
-  const [passwordConfirmation, setPasswordConfirmation] = useState<string>('');
-
-  const [email, setEmail] = useState<string>('');
   const [errMsg, setErrMsg] = useState<{ msg: string }[] | string>('');
   const errRef = useRef<HTMLParagraphElement>(null);
+
   const navigate = useNavigate()
 
   const handleTogglePasswordVisibility = () => {
@@ -37,30 +35,28 @@ const SignUp: React.FC = () => {
   };
 
   useEffect(() => {
-    setValidPassword(PWD_REGEX.test(password));
-  }, [password, PWD_REGEX])
+    setValidPassword(PWD_REGEX.test(newPassword));
+  }, [newPassword, PWD_REGEX])
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const validPassword = PWD_REGEX.test(password);
-    if (!validPassword) {
-      setErrMsg("Invalid password.");
-      return;
-    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const recoveryPasswordId = urlParams.get('recoveryPasswordId');
 
     try {
-      const response = await axios.post('/api/users/sign-up',
-        JSON.stringify({ email, password, passwordConfirmation }),
+      await axios.put(`/api/users/reset-password?recoveryPasswordId=${recoveryPasswordId}`,
+        JSON.stringify({ newPassword, confirmPassword }),
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+          },
           withCredentials: true
         }
       );
-      localStorage.setItem('token', response?.data?.token);
-      localStorage.setItem('email', response?.data?.email);
 
-      navigate("/")
+      navigate('/reset-password-successful');
     } catch (err) {
       const error = err as AxiosError<ErrorResponse>;
 
@@ -79,13 +75,15 @@ const SignUp: React.FC = () => {
 
   return (
     <div className="container">
-      <Header loginSignUp={false} setLoginSignUp={() => {}} selectedLink=''/>
+      <Header loginSignUp={false} setLoginSignUp={() => { }} selectedLink='home' />
       <div className="sign-up">
-        <div className="content">
+        <div className="content fgt-pwd">
           <div className="body-text">
-            <h1>Signup & Start</h1>
-            <h1>Creating Your</h1>
-            <h1><span>Event.</span></h1>
+            <h1>Reset Your</h1>
+            <h1><span>Password?.</span></h1>
+          </div>
+          <div className="instruction">
+            <p>Input your <span>Email</span> to confirm your account.</p>
           </div>
           <div className="form-inputs">
             {Array.isArray(errMsg) ? (
@@ -106,17 +104,13 @@ const SignUp: React.FC = () => {
               </p>
             )}
             <form action="" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder='Enter your email address' />
-              <div className="input">
+            <div className="input">
                 <input
                   type={passwordVisible ? "text" : "password"}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   onFocus={() => setPasswordFocus(true)}
                   onBlur={() => setPasswordFocus(false)}
-                  placeholder='Create password' />
+                  placeholder='New password' />
                 <FontAwesomeIcon
                   icon={passwordVisible ? faEye : faEyeSlash}
                   className="eye-icon"
@@ -138,7 +132,7 @@ const SignUp: React.FC = () => {
               <div className="input">
                 <input
                   type={confirmPasswordVisible ? "text" : "password"}
-                  onChange={(e) => setPasswordConfirmation(e.target.value)}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder='Confirm password' />
                 <FontAwesomeIcon
                   icon={confirmPasswordVisible ? faEye : faEyeSlash}
@@ -147,25 +141,7 @@ const SignUp: React.FC = () => {
                 />
               </div>
               <div className="btn">
-                <button type='submit'>Signup</button>
-              </div>
-              <p className="instruction">Registered already? Click <Link to="/sign-in">here</Link> to Login to your account</p>
-              <div className="options">
-                <hr />
-                <p className="option">or signup with</p>
-                <hr />
-              </div>
-              <div className="signup-icons">
-                <div className="center">
-                  <div className="google">
-                    <img src={googleIcon} alt="" />
-                    <p>Google</p>
-                  </div>
-                  <div className="facebook">
-                    <img src={facebookIcon} alt="" />
-                    <p>Facebook</p>
-                  </div>
-                </div>
+                <button type='submit'>Reset Password</button>
               </div>
             </form>
           </div>
@@ -181,7 +157,7 @@ const SignUp: React.FC = () => {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SignUp;
+export default ResetPassword

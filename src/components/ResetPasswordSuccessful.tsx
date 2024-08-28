@@ -1,30 +1,28 @@
-import React from 'react';
-import Header from './Header';
+import React from 'react'
+import Header from './Header'
 import userIcon from '../assets/user.svg';
 import logo1 from '../assets/logo1.svg';
 import logo2 from '../assets/logo2.svg';
 import checkIcon from '../assets/Checked.svg'
-import './App.scss';
+import { Link } from 'react-router-dom';
 
-const SignUpSuccessful: React.FC = () => {
-
+const ResetPasswordSuccessful: React.FC = () => {
   return (
     <div className="container">
-      <Header loginSignUp={false} setLoginSignUp={() => {}} selectedLink='' />
+      <Header loginSignUp={false} setLoginSignUp={() => { }} selectedLink='home' />
       <div className="sign-up">
         <div className="content">
           <div className="body-text">
-            <h1>Login & Start</h1>
-            <h1>Creating Your</h1>
-            <h1><span>Event.</span></h1>
+            <h1>Reset Your</h1>
+            <h1><span>Password?.</span></h1>
           </div>
           <div className="form-inputs">
             <div className="checked">
               <img src={checkIcon} alt="" />
-              <p>Account is <span>successfully</span> Created!</p>
+              <p> your <span>password reset</span> is successful!</p>
             </div>
             <div className="confirm-acc">
-              <p>Go to your <span>Email</span> to confirm your account.</p>
+              <p>Click <span><Link to="/sign-in">here</Link></span> to login to your account</p>
             </div>
           </div>
         </div>
@@ -39,7 +37,7 @@ const SignUpSuccessful: React.FC = () => {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SignUpSuccessful;
+export default ResetPasswordSuccessful
