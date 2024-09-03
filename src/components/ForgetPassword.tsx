@@ -7,9 +7,11 @@ import Header from './Header';
 import userIcon from '../assets/user.svg';
 import logo1 from '../assets/logo1.svg';
 import logo2 from '../assets/logo2.svg';
+import LoginSignUpModal from './LoginSignUpModal';
 
 const ForgetPassword: React.FC = () => {
   const [email, setEmail] = useState<string>('');
+  const [loginSignUp, setLoginSignUp] = useState<boolean>(false);
 
   const [errMsg, setErrMsg] = useState<{ msg: string }[] | string>('');
   const errRef = useRef<HTMLParagraphElement>(null);
@@ -46,9 +48,15 @@ const ForgetPassword: React.FC = () => {
       errRef?.current?.focus();
     }
   }
+
+  const closeModal = () => {
+    setLoginSignUp(false);
+  };
+
   return (
     <div className="container">
-      <Header loginSignUp={false} setLoginSignUp={() => { }} selectedLink='' />
+      <Header loginSignUp={false} setLoginSignUp={setLoginSignUp} selectedLink='home' />
+      {loginSignUp && <LoginSignUpModal closeModal={closeModal} />}
       <div className="sign-up">
         <div className="content fgt-pwd">
           <div className="body-text">

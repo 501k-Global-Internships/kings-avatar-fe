@@ -9,7 +9,11 @@ import ShareIcon from '../assets/octicon_share-24.svg'
 import { SideNavProps } from './AppInterface'
 import './SideNav.scss'
 
-const SideNav: React.FC<SideNavProps> = ({ currentTab, onDownloadClick, onShapesClick, onTextsClick, onEditClick }) => {
+const SideNav: React.FC<SideNavProps> = ({
+  currentTab, onDownloadClick,
+  onShapesClick, onTextsClick,
+  onEditClick, setModalOpen
+}) => {
 
   return (
     <div className="side-nav">
@@ -30,7 +34,7 @@ const SideNav: React.FC<SideNavProps> = ({ currentTab, onDownloadClick, onShapes
               <img src={TextIcon} alt="" />
               <p>Text</p>
             </li>
-            <li className={`${currentTab === 'download' ? "active" : ""}`} onClick={onDownloadClick}>
+            <li className={`${currentTab === 'download' ? "active" : ""}`} onClick={() => { setModalOpen(true) }} >
               <img src={DownloadIcon} alt="" />
               <p>Download</p>
             </li>

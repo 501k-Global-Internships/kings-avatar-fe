@@ -8,6 +8,7 @@ export interface SideNavProps {
   onShapesClick: () => void;
   onTextsClick: () => void;
   onEditClick: () => void;
+  setModalOpen: (open: boolean) => void; 
 }
 
 export type FrameType = 'circle' | 'square';
@@ -37,5 +38,9 @@ export interface FooterProps {
 
 export interface LoginSignUpModalProps {
   closeModal: () => void;
+}
+
+export interface DownloadModalProps {
+  setModalOpen: (open: boolean) => void;
 }
 

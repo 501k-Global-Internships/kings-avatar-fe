@@ -28,6 +28,7 @@ const DashboardGallery: React.FC = () => {
       onShapesClick={() => {}}
       onTextsClick={() => {}}
       onEditClick={() => {}}
+      setModalOpen={() => {}}
       />
         <div className="body">
           <div className="project">

@@ -242,6 +242,7 @@
             &::placeholder {
               color: #000000;
               font-size: 12px;
+              font-family: "Montserrat", sans-serif;
             }
           }
 
@@ -280,14 +281,14 @@
             display: flex;
             align-items: start;
             justify-content: start;
-            width: 18rem;
-            margin-left: 5rem;
+            width: 100%;
             margin-bottom: 2rem;
 
             a {
               color: #3183ff;
               text-decoration: none;
               font-size: 12px;
+              font-family: "Montserrat", sans-serif;
             }
           }
 
@@ -314,10 +315,12 @@
           .instruction {
             font-size: 11px;
             color: #ffffff;
+            font-family: "Montserrat", sans-serif;
 
             a {
               text-decoration: none;
               color: #f7b12fed;
+              font-family: "Montserrat", sans-serif;
             }
           }
 
@@ -337,6 +340,7 @@
               font-size: 12px;
               color: #ffffff;
               padding: 0 2rem;
+              font-family: "Montserrat", sans-serif;
             }
           }
 
@@ -368,6 +372,7 @@
                   color: #ffffff;
                   font-size: 12px;
                   cursor: pointer;
+                  font-family: "Montserrat", sans-serif;
                 }
               }
             }
@@ -639,7 +644,7 @@
           text-align: start;
           margin: 0;
           padding: 0;
-          font-family: 'Montserrat', sans-serif;
+          font-family: "Montserrat", sans-serif;
         }
       }
     }
@@ -677,7 +682,7 @@
             font-size: 60px;
             line-height: 60px;
             word-spacing: 10px;
-            font-family: 'Hanson bold', sans-serif;
+            font-family: "Hanson bold", sans-serif;
             font-weight: 700;
             color: #fff;
 
@@ -740,7 +745,7 @@
             font-size: 60px;
             line-height: 60px;
             word-spacing: 10px;
-            font-family: 'Hanson bold', sans-serif;
+            font-family: "Hanson bold", sans-serif;
             font-weight: 700;
             color: #fff;
 
@@ -761,7 +766,7 @@
             text-align: start;
             margin: 0;
             padding: 0;
-            font-family: 'Montserrat' sans-serif;
+            font-family: "Montserrat" sans-serif;
 
             span {
               color: #3183ff;
@@ -786,7 +791,7 @@
             color: #fff;
             font-size: 32px;
             font-weight: 700;
-            font-family: 'Hanson', sans-serif;
+            font-family: "Hanson", sans-serif;
             cursor: pointer;
           }
         }
@@ -846,7 +851,6 @@
               justify-content: space-between;
               width: 31rem;
               height: 10rem;
-              // margin-top: 5rem;
 
               .gallery,
               .file {
@@ -1079,7 +1083,7 @@
                   border: none;
                   cursor: pointer;
                   font-size: 13px;
-                  font-family: 'Montserrat', sans-serif;
+                  font-family: "Montserrat", sans-serif;
                 }
 
                 .active {
@@ -1112,7 +1116,7 @@
                   color: #ffffff;
                   padding: 0.2rem 0.5rem;
                   border: 1px solid #222223;
-                  font-family: 'Montserrat', sans-serif;
+                  font-family: "Montserrat", sans-serif;
                   cursor: pointer;
                 }
 
@@ -1135,11 +1139,6 @@
                 margin: 1rem 0;
               }
 
-              &.shapes {
-                width: 12rem;
-                margin: 1rem 0;
-              }
-
               &.add {
                 width: 5rem;
               }
@@ -1151,7 +1150,9 @@
               .crop,
               .flip,
               .rotate,
-              .change {
+              .change,
+              .next,
+              .prev {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -1165,7 +1166,7 @@
                 border-radius: 6px;
                 cursor: pointer;
 
-                &.square {
+                &.next {
                   margin-right: 0;
                 }
 
@@ -1178,14 +1179,14 @@
                   text-align: center;
                   font-size: 10px;
                   font-weight: 500;
-                  font-family: 'Montserrat', sans-serif;
+                  font-family: "Montserrat", sans-serif;
                   line-height: 15.85px;
                   color: #ffffff;
                   margin: 0;
                 }
               }
 
-              .change {
+              .next {
                 margin-right: 0;
               }
 
@@ -1228,6 +1229,7 @@
             &.hidden {
               opacity: 0;
               transform: translateX(-100%);
+              pointer-events: none;
             }
 
             .img-cnt {
@@ -1270,7 +1272,7 @@
                   text-align: center;
                   font-size: 10px;
                   font-weight: 500;
-                  font-family: 'Montserrat', sans-serif;
+                  font-family: "Montserrat", sans-serif;
                   line-height: 15.85px;
                   color: #ffffff;
                   margin: 0;

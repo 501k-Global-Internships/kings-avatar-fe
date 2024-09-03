@@ -15,10 +15,13 @@ import SquareIcon from '../assets/square.svg';
 import RemoveIcon from '../assets/remove.svg';
 import FontIcon from '../assets/fontsize.svg';
 import TextEffectsIcon from '../assets/textEffects.svg';
+import NextIcon from '../assets/next.svg';
+import PrevIcon from '../assets/prev.svg';
 import axios from '../api/axios';
 import { ErrorResponse, Frame, FrameType, ImageText } from './AppInterface';
 import { useGallery } from '../context/GalleryContext';
 import './App.scss';
+import DownloadModal from './DownloadModal';
 
 const DashboardEdit: React.FC = () => {
   const { galleryImages, setGalleryImages, projectImages, setProjectImages } = useGallery();
@@ -38,9 +41,10 @@ const DashboardEdit: React.FC = () => {
   const [rotate, setRotate] = useState<number>(0);
   const [shapes, setShapes] = useState<boolean>(false);
 
-  const [frameType] = useState<'circle' | 'square' | null>(null);
+  // const [frameType] = useState<'circle' | 'square' | null>(null);
   const [frameSize] = useState<number>(150);
   const [resizing, setResizing] = useState<number | null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const [framePosition] = useState<{ top: number; left: number }>({ top: 100, left: 200 });
   const [innerImage] = useState<string | null>(null);
@@ -334,6 +338,7 @@ const DashboardEdit: React.FC = () => {
           onShapesClick={() => { setShapes(!shapes); setTexts(false) }}
           onEditClick={() => { setShapes(false); setTexts(false) }}
           onTextsClick={() => { setTexts(!texts); setShapes(false) }}
+          setModalOpen={setModalOpen}
         />
         <div className="body">
           <div className="project">
@@ -341,6 +346,7 @@ const DashboardEdit: React.FC = () => {
             {file || previewUrl ?
               <div className="cnt">
                 <div className="img-section">
+                {modalOpen && <DownloadModal setModalOpen={setModalOpen} />}
                   {Array.isArray(errMsg) ? (
                     errMsg.map((error, index) => (
                       <p key={index}
@@ -535,7 +541,11 @@ const DashboardEdit: React.FC = () => {
                       </div>
                     </div>
                     {shapes ?
-                      <div className={`actions ${frameType ? 'size-slider' : 'shapes'}`}>
+                      <div className={`actions size-slider`}>
+                        <button className="prev" onClick={() => { setShapes(false); setTexts(false) }}>
+                          <img src={PrevIcon} alt="" />
+                          <p>Prev</p>
+                        </button>
                         <button className="crop" onClick={() => handleFrameTypeChange('circle')}>
                           <img src={CircleIcon} alt="" />
                           <p>Circle</p>
@@ -544,10 +554,18 @@ const DashboardEdit: React.FC = () => {
                           <img src={SquareIcon} alt="" />
                           <p>Square</p>
                         </button>
+                        <button className="next" onClick={() => { setTexts(true); setShapes(false) }}>
+                          <img src={NextIcon} alt="" />
+                          <p>Next</p>
+                        </button>
                       </div>
                       :
                       texts ?
-                        <div className="actions shapes">
+                        <div className="actions size-slider">
+                          <button className="prev" onClick={() => { setShapes(true) }}>
+                            <img src={PrevIcon} alt="" />
+                            <p>Prev</p>
+                          </button>
                           <button className="crop" onClick={handleTextFrame}>
                             <img src={FontIcon} alt="" />
                             <p>Font</p>
@@ -559,6 +577,10 @@ const DashboardEdit: React.FC = () => {
                         </div>
                         :
                         <div className="actions size-slider">
+                          <button className="prev" onClick={() => { setFile(null); setPreviewUrl(null) }}>
+                            <img src={PrevIcon} alt="" />
+                            <p>Prev</p>
+                          </button>
                           <button
                             className="flip"
                             onClick={() => {
@@ -570,7 +592,7 @@ const DashboardEdit: React.FC = () => {
                             <img src={FlipIcon} alt="" />
                             <p>Flip</p>
                           </button>
-                          <button className="rotate" onClick={() =>{ handleRotate(90); setIsVisible(false);}}>
+                          <button className="rotate" onClick={() => { handleRotate(90); setIsVisible(false); }}>
                             <img src={RotateIcon} alt="" />
                             <p>Rotate</p>
                           </button>
@@ -584,6 +606,10 @@ const DashboardEdit: React.FC = () => {
                           >
                             <img src={GalleryIcon} alt="" />
                             <p>Change Photo</p>
+                          </button>
+                          <button className="next" onClick={() => { setShapes(true) }}>
+                            <img src={NextIcon} alt="" />
+                            <p>Next</p>
                           </button>
                         </div>}
                   </div>

@@ -79,7 +79,7 @@ const SignUp: React.FC = () => {
 
   return (
     <div className="container">
-      <Header loginSignUp={false} setLoginSignUp={() => {}} selectedLink=''/>
+      <Header loginSignUp={false} setLoginSignUp={() => {}} selectedLink='home'/>
       <div className="sign-up">
         <div className="content">
           <div className="body-text">
