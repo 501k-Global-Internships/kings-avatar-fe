@@ -14,7 +14,6 @@ const ResetPasswordSuccessful: React.FC = () => {
     setLoginSignUp(false);
   };
 
-
   return (
     <div className="container">
       <Header
@@ -23,7 +22,7 @@ const ResetPasswordSuccessful: React.FC = () => {
         selectedLink=''
         getStarted={true}
       />
-       {loginSignUp && <LoginSignUpModal closeModal={closeModal} />}
+      {loginSignUp && <LoginSignUpModal closeModal={closeModal} />}
       <div className="sign-up">
         <div className="content">
           <div className="body-text">

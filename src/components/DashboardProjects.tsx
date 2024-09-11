@@ -35,11 +35,11 @@ const DashboardProjects: React.FC = () => {
         />
         <div className="body">
           <div className="project">
-            <UntitledProject 
-            onSave={() => { }} 
-            onShare={() => { }} 
-            untitled={false}
-            actions={false}
+            <UntitledProject
+              onSave={() => { }}
+              onShare={() => { }}
+              untitled={false}
+              actions={false}
             />
             <div className="cnt">
               <div className="img-section">

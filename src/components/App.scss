@@ -909,74 +909,127 @@
                   justify-content: center;
                   width: 100%;
                   height: 100%;
+
+                  .main-image {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                  }
                 }
 
-                .main-image {
-                  width: 100%;
-                  height: 100%;
-                  object-fit: contain;
-                }
-
-                .frame-section {
+                .frame-cnt {
                   display: flex;
-                  align-items: start;
+                  align-items: center;
                   justify-content: space-between;
 
-                  .frame-border {
+                  .btn {
+                    width: 2rem;
+                    height: 2rem;
                     display: flex;
                     align-items: start;
-                    justify-content: center;
-                    border: 1px solid #3183ff;
-                    margin-top: 1rem;
+                    justify-content: space-between;
 
-                    &.hide {
-                      display: flex;
-                      align-items: start;
-                      justify-content: center;
-                      margin-top: 1rem;
+                    button {
+                      background: none;
                       border: none;
-                    }
+                      padding: 0;
+                      position: absolute;
+                      right: 0;
+                      cursor: pointer;
 
-                    .frame {
-                      overflow: hidden;
-                      background: #dadada;
-
-                      .inner-image {
-                        width: 100%;
-                        height: 100%;
-                        aspect-ratio: 4/3;
-                        object-fit: contain;
-                        pointer-events: none;
-                        -webkit-user-drag: none;
-                        user-select: none;
+                      &.hide {
+                        opacity: 0;
+                        transform: translateY(-100% -100%);
+                        display: none;
                       }
 
-                      .upload-btn {
-                        cursor: pointer;
-                        border: none;
-
-                        img {
-                          width: 1.5rem;
-                          height: auto;
+                      img {
+                        &:hover {
+                          width: 1.8rem;
+                          height: 1.8rem;
                         }
                       }
                     }
                   }
 
-                  button {
-                    background: none;
-                    border: none;
-                    padding: 0;
-                    cursor: pointer;
+                  .frame-section {
+                    display: flex;
+                    align-items: start;
+                    justify-content: center;
 
-                    &.hide {
-                      opacity: 0;
-                      transform: translateY(-100% -100%);
-                      display: none;
+                    .frame-border {
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      border: 1px dashed #3183ff;
+
+                      &.hide {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border: none;
+                      }
+
+                      .frame {
+                        overflow: hidden;
+                        background: #dadada;
+
+                        .inner-image {
+                          width: 100%;
+                          height: 100%;
+                          aspect-ratio: 4/3;
+                          object-fit: contain;
+                          pointer-events: none;
+                          -webkit-user-drag: none;
+                          user-select: none;
+                        }
+
+                        .upload-btn {
+                          cursor: pointer;
+                          border: none;
+
+                          img {
+                            width: 1.5rem;
+                            height: auto;
+                          }
+                        }
+                      }
+
+                      .resize-node {
+                        width: 10px;
+                        height: 10px;
+                        background-color: white;
+                        border: 1px solid #ccc;
+                        position: absolute;
+                        cursor: pointer;
+
+                        &.top-left {
+                          top: -5px;
+                          left: -5px;
+                          cursor: nwse-resize;
+                        }
+
+                        &.top-right {
+                          top: -5px;
+                          right: -5px;
+                          cursor: nesw-resize;
+                        }
+
+                        &.bottom-left {
+                          bottom: -5px;
+                          left: -5px;
+                          cursor: nesw-resize;
+                        }
+
+                        &.bottom-right {
+                          bottom: -5px;
+                          right: -5px;
+                          cursor: nwse-resize;
+                        }
+                      }
                     }
                   }
                 }
-
                 .text-frame {
                   display: flex;
                   align-items: start;

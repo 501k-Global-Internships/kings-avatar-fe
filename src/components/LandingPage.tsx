@@ -28,11 +28,11 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="container landing">
-      <Header 
-      loginSignUp={loginSignUp} 
-      setLoginSignUp={setLoginSignUp} 
-      selectedLink='home' 
-      getStarted={true}
+      <Header
+        loginSignUp={loginSignUp}
+        setLoginSignUp={setLoginSignUp}
+        selectedLink='home'
+        getStarted={true}
       />
       {loginSignUp && <LoginSignUpModal closeModal={closeModal} />}
       <div className="sign-up dash">
@@ -173,7 +173,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <Footer backgroundImage={true}  />
+        <Footer backgroundImage={true} />
       </div>
     </div>
   )

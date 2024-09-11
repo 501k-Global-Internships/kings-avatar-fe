@@ -15,11 +15,11 @@ const AboutUs: React.FC = () => {
 
   return (
     <div className="container landing">
-      <Header 
-      loginSignUp={loginSignUp} 
-      setLoginSignUp={setLoginSignUp} 
-      selectedLink='about' 
-      getStarted={true}
+      <Header
+        loginSignUp={loginSignUp}
+        setLoginSignUp={setLoginSignUp}
+        selectedLink='about'
+        getStarted={true}
       />
       {loginSignUp && <LoginSignUpModal closeModal={closeModal} />}
       <div className="sign-up dash">

@@ -13,7 +13,6 @@ const ForgotPasswordSuccessful: React.FC = () => {
     setLoginSignUp(false);
   };
 
-
   return (
     <div className="container">
       <Header

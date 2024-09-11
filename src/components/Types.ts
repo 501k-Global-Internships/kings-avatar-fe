@@ -15,8 +15,8 @@ export type FrameType = 'circle' | 'square';
 export interface Frame {
   id: number;
   type: FrameType;
-  frameSize: number;
-  framePosition: { top: number; left: number };
+  size: number;
+  position: { top: number; left: number };
   innerImage: string | null;
 }
 export interface ImageText {
@@ -53,3 +53,5 @@ export interface UntitledProjectProps {
   actions: boolean;
   untitled: boolean;
 }
+
+export type ResizeCorner = "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
