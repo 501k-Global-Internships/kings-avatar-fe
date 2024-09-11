@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { AxiosError } from 'axios';
 import axios from '../api/axios';
-import { ErrorResponse } from './AppInterface';
+import { ErrorResponse } from './Types';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import userIcon from '../assets/user.svg';
@@ -55,7 +55,12 @@ const ForgetPassword: React.FC = () => {
 
   return (
     <div className="container">
-      <Header loginSignUp={false} setLoginSignUp={setLoginSignUp} selectedLink='home' />
+     <Header
+        loginSignUp={loginSignUp}
+        setLoginSignUp={setLoginSignUp}
+        selectedLink=''
+        getStarted={true}
+      />
       {loginSignUp && <LoginSignUpModal closeModal={closeModal} />}
       <div className="sign-up">
         <div className="content fgt-pwd">

@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import DashboardHeader from './DashboardHeader';
 import SideNav from './SideNav';
 import UntitledProject from './UntitledProject';
 import { useGallery } from '../context/GalleryContext';
 
 const DashboardProjects: React.FC = () => {
-  const { projectImages } = useGallery();
+  const { projectImages, setProjectImages } = useGallery();
+
+  useEffect(() => {
+    const cachedImages = localStorage.getItem('projectImages');
+    if (cachedImages) {
+      setProjectImages(JSON.parse(cachedImages));
+    }
+  }, [setProjectImages]);
 
   const getImageSizeClass = (numImages: number) => {
     if (numImages <= 4) return 'large';
@@ -19,16 +26,21 @@ const DashboardProjects: React.FC = () => {
     <div className="container">
       <DashboardHeader />
       <div className="edit">
-        <SideNav currentTab='projects' 
-        onDownloadClick={() => { }} 
-        onShapesClick={() => {}}
-        onTextsClick={() => {}}
-        onEditClick={() => {}}
-        setModalOpen={() => {}}
+        <SideNav currentTab='projects'
+          onDownloadClick={() => { }}
+          onShapesClick={() => { }}
+          onTextsClick={() => { }}
+          onEditClick={() => { }}
+          setModalOpen={() => { }}
         />
         <div className="body">
           <div className="project">
-            <UntitledProject onSave={() => { }} />
+            <UntitledProject 
+            onSave={() => { }} 
+            onShare={() => { }} 
+            untitled={false}
+            actions={false}
+            />
             <div className="cnt">
               <div className="img-section">
                 <div className="import img-box">

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import user2 from '../assets/user2.svg'
 import history from '../assets/history.svg';
-import files from '../assets/files.svg'
+import files from '../assets/files.svg';
 import DashboardHeader from './DashboardHeader';
 import './App.scss';
 
@@ -26,10 +26,10 @@ const Dashboard: React.FC = () => {
                     <Link to="/dashboard-edit"><img src={user2} alt="" />CREATE AVATAR</Link>
                   </li>
                   <li className="">
-                    <Link to=""><img src={history} alt="" />HISTORY</Link>
+                    <Link to="/dashboard-gallery"><img src={history} alt="" />HISTORY</Link>
                   </li>
                   <li className="">
-                    <Link to=""><img src={files} alt="" />PROJECTS</Link>
+                    <Link to="/dashboard-projects"><img src={files} alt="" />PROJECTS</Link>
                   </li>
                 </ul>
               </nav>

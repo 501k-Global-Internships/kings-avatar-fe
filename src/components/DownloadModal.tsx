@@ -2,17 +2,25 @@ import React from 'react'
 import './DownloadModal.scss';
 import DownloadIcon from '../assets/downloads.svg';
 import CopyIcon from '../assets/copy.svg';
-import { DownloadModalProps } from './AppInterface';
+import RemoveIcon from '../assets/remove.svg';
+import { DownloadModalProps } from './Types';
 
-const DownloadModal: React.FC<DownloadModalProps> = ({ setModalOpen }) => {
+const DownloadModal: React.FC<DownloadModalProps> = ({ setModalOpen, setTexts, handleDownloadClick }) => {
   const handleCloseModal = () => {
     setModalOpen(false);
+    setTexts(true);
     document.body.classList.remove('modal-open');
   };
 
   return (
-    <div className="modal-container" onClick={handleCloseModal}>
+    <div className="modal-container">
       <div className="modal">
+        <button
+          onClick={handleCloseModal}
+          className='remove-btn'
+        >
+          <img className="remove" src={RemoveIcon} alt="" />
+        </button>
         <div className="modal-content">
           <div className="hdr">
             <h2>Share Avatar Link </h2>
@@ -25,7 +33,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ setModalOpen }) => {
               <button>copy Link <img src={CopyIcon} alt="" /></button>
             </div>
             <div className="download">
-              <button>Download <img src={DownloadIcon} alt="" /></button>
+              <button onClick={handleDownloadClick}>Download <img src={DownloadIcon} alt="" /></button>
             </div>
           </div>
         </div>
