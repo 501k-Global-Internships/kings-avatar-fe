@@ -55,7 +55,7 @@ const ForgetPassword: React.FC = () => {
 
   return (
     <div className="container">
-     <Header
+      <Header
         loginSignUp={loginSignUp}
         setLoginSignUp={setLoginSignUp}
         selectedLink=''

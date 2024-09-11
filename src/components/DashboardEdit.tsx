@@ -20,7 +20,7 @@ import TextEffectsIcon from '../assets/textEffects.svg';
 import NextIcon from '../assets/next.svg';
 import PrevIcon from '../assets/prev.svg';
 import axios from '../api/axios';
-import { ErrorResponse, Frame, FrameType, ImageText } from './Types';
+import { ErrorResponse, Frame, FrameType, ImageText, ResizeCorner } from './Types';
 import { useGallery } from '../context/GalleryContext';
 import './App.scss';
 
@@ -44,21 +44,20 @@ const DashboardEdit: React.FC = () => {
   const [shapes, setShapes] = useState<boolean>(false);
   const [download, setDownload] = useState<boolean>(false);
 
-  // const [frameType] = useState<'circle' | 'square' | null>(null);
   const [frameSize] = useState<number>(150);
-  const [resizing, setResizing] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const [framePosition] = useState<{ top: number; left: number }>({ top: 100, left: 200 });
   const [innerImage] = useState<string | null>(null);
   const [dragging, setDragging] = useState<number | null>(null);
   const [frames, setFrames] = useState<Frame[]>([]);
+  const [resizing, setResizing] = useState<{ id: number; corner: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' } | null>(null);
 
   const [textFrameSize] = useState<number>(150);
   const [textFrameHeight] = useState<number>(15);
   const [textFrames, setTextFrames] = useState<ImageText[]>([]);
   const [texts, setTexts] = useState<boolean>(false);
-  const [activeFrameId, setActiveFrameId] = useState<number | null>(null);
+  const [activeFrameId, setActiveFrameId] = useState<{ frameId: number | null; activeFrame: boolean }>({ frameId: null, activeFrame: false });
   const [textFrameAppear, setTextFrameAppear] = useState<boolean | null>(true);
 
   const errRef = useRef<HTMLParagraphElement>(null);
@@ -68,13 +67,8 @@ const DashboardEdit: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleMouseDown = (id: number) => {
-    setDragging(id);
-  };
-
-  const handleMouseUp = () => {
-    setDragging(null);
-    setResizing(null);
+  const handleMouseDown = (frameId: number) => {
+    setDragging(frameId);
   };
 
   useEffect(() => {
@@ -120,41 +114,82 @@ const DashboardEdit: React.FC = () => {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (dragging !== null && imgSectionRef.current) {
-        const rect = imgSectionRef.current.getBoundingClientRect();
-        let newTop = e.clientY - frameSize / 2;
-        let newLeft = e.clientX - frameSize / 2;
+        const containerRect = imgSectionRef.current.getBoundingClientRect();
+        const frame = frames.find(f => f.id === dragging);
 
-        // Ensure the frame stays within the imgSection bounds
-        if (newTop < rect.top) newTop = rect.top;
-        if (newLeft < rect.left) newLeft = rect.left;
-        if (newTop + frameSize > rect.top + rect.height) newTop = rect.top + rect.height - frameSize;
-        if (newLeft + frameSize > rect.left + rect.width) newLeft = rect.left + rect.width - frameSize;
-
-        setFrames(frames.map(frame =>
-          frame.id === dragging
-            ? { ...frame, framePosition: { top: newTop - rect.top, left: newLeft - rect.left } }
-            : frame
-        ));
-      } else if (resizing !== null) {
-        const frame = frames.find(frame => frame.id === resizing);
         if (frame) {
-          const newSize = Math.max(e.clientX - frame.framePosition.left, e.clientY - frame.framePosition.top) / 2;
+          const newTop = e.clientY - containerRect.top - frame.size / 2;
+          const newLeft = e.clientX - containerRect.left - frame.size / 2;
+
           setFrames(frames.map(f =>
-            f.id === resizing
-              ? { ...f, frameSize: newSize }
+            f.id === dragging
+              ? {
+                ...f,
+                position: {
+                  top: Math.max(0, Math.min(newTop, containerRect.height - frame.size)),
+                  left: Math.max(0, Math.min(newLeft, containerRect.width - frame.size)),
+                }
+              }
+              : f
+          ));
+        }
+      } else if (resizing !== null && imgSectionRef.current) {
+        const frame = frames.find(f => f.id === resizing.id);
+
+        if (frame) {
+          const containerRect = imgSectionRef.current.getBoundingClientRect();
+          let newSize = frame.size;
+          let newTop = frame.position.top;
+          let newLeft = frame.position.left;
+
+          switch (resizing.corner) {
+            case 'topLeft':
+              newSize = Math.max(frame.size + (frame.position.top - (e.clientY - containerRect.top)), 0);
+              newTop = Math.max(e.clientY - containerRect.top, 0);
+              newLeft = Math.max(e.clientX - containerRect.left, 0);
+              break;
+            case 'topRight':
+              newSize = Math.max(e.clientX - containerRect.left - frame.position.left, 0);
+              newTop = Math.max(e.clientY - containerRect.top, 0);
+              break;
+            case 'bottomLeft':
+              newSize = Math.max(e.clientY - containerRect.top - frame.position.top, 0);
+              newLeft = Math.max(e.clientX - containerRect.left, 0);
+              break;
+            case 'bottomRight':
+              newSize = Math.max(
+                Math.min(e.clientX - containerRect.left, e.clientY - containerRect.top) - frame.position.left,
+                0
+              );
+              break;
+          }
+
+          setFrames(frames.map(f =>
+            f.id === resizing.id
+              ? {
+                ...f,
+                size: Math.min(newSize, containerRect.width - f.position.left),
+                position: { top: newTop, left: newLeft }
+              }
               : f
           ));
         }
       }
     };
 
+    const handleMouseUp = () => {
+      setDragging(null);
+      setResizing(null);
+    };
+
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
+
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [dragging, resizing, frameSize, frames]);
+  }, [dragging, resizing, frames]);
 
   useEffect(() => {
     if (textRef.current) {
@@ -290,13 +325,14 @@ const DashboardEdit: React.FC = () => {
   };
 
   const handleFrameTypeChange = (type: FrameType) => {
-    const newFrame = {
+    const newFrame: Frame = {
       id: Date.now(),
       type,
-      frameSize: frameSize,
-      framePosition: framePosition,
+      size: frameSize,
+      position: framePosition,
       innerImage: innerImage,
     };
+
     setFrames([...frames, newFrame]);
   };
 
@@ -333,8 +369,9 @@ const DashboardEdit: React.FC = () => {
     setTextFrames(textFrames.filter(frame => frame.id !== id));
   };
 
-  const handleResizeMouseDown = (id: number) => {
-    setResizing(id);
+  const handleResizeMouseDown = (e: React.MouseEvent, frameId: number, corner: ResizeCorner) => {
+    e.preventDefault();
+    setResizing({ id: frameId, corner });
   };
 
   return (
@@ -396,69 +433,112 @@ const DashboardEdit: React.FC = () => {
                         />
                         {frames.map(frame => (
                           <div
-                            key={frame.id}
-                            className="frame-section"
+                            className="frame-cnt"
                             style={{
                               position: 'absolute',
-                              top: frame.framePosition.top,
-                              left: frame.framePosition.left,
+                              top: frame.position.top,
+                              left: frame.position.left,
                             }}
-                            // onMouseDown={() => setActiveFrameId(null)}
-                            onMouseUp={() => setActiveFrameId(frame.id)}
                           >
-                            <div className={activeFrameId === frame.id ? 'frame-border' : 'frame-border hide'}
-                              style={{
-                                width: frame.type === 'square' ? (frame.frameSize) : frame.frameSize,
-                                height: frame.type === 'square' ? (frame.frameSize) : frame.frameSize,
-                              }}
-                              onMouseDown={() => handleResizeMouseDown(frame.id)}
-                            >
-                              <div className={`frame ${frame.type}`}
-                                style={{
-                                  width: frame.frameSize,
-                                  height: frame.frameSize,
-                                  borderRadius: frame.type === 'circle' ? '50%' : '0',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  overflow: 'hidden',
-                                  cursor: 'move',
-                                }}
-                                onMouseDown={(e) => handleMouseDown(frame.id)}
+                            <div className="btn">
+                              <button
+                                onClick={() => handleRemoveFrame(frame.id)}
+                                className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? '' : 'hide'}
                               >
-                                {frame.innerImage ? (
-                                  <img
-                                    src={frame.innerImage}
-                                    alt="Inner"
-                                    className="inner-image"
-                                    style={{
-                                      width: '100%',
-                                      height: '100%',
-                                      objectFit: 'cover',
-                                      borderRadius: frame.type === 'circle' ? '50%' : '0',
-                                    }}
-                                  />
-                                ) : (
-                                  <div>
-                                    <input
-                                      type="file"
-                                      onChange={(e) => handleFileChange(e, frame.id)}
-                                      style={{ display: 'none' }}
-                                      id={`innerImageInput-${frame.id}`}
+                                <img className="remove" src={RemoveIcon} alt="" />
+                              </button>
+                            </div>
+                            <div
+                              key={frame.id}
+                              className="frame-section"
+                              style={{
+                                width: frame.size,
+                                height: frame.size,
+                              }}
+                              onMouseUp={() => setActiveFrameId({ frameId: frame.id, activeFrame: true })}
+                            >
+                              <div
+                                className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? 'frame-border' : 'frame-border hide'}
+                                style={{
+                                  width: frame.size,
+                                  height: frame.size,
+                                  top: 0,
+                                  left: 0,
+                                  position: 'absolute',
+                                }}
+                                onMouseDown={() => handleMouseDown(frame.id)}
+                              >
+                                <div
+                                  className={`frame ${frame.type}`}
+                                  style={{
+                                    width: frame.size,
+                                    height: frame.size,
+                                    borderRadius: frame.type === 'circle' ? '50%' : '0',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    overflow: 'hidden',
+                                    cursor: 'move',
+                                  }}
+                                  onDoubleClick={() => setActiveFrameId({ frameId: null, activeFrame: false })}
+                                >
+                                  {frame.innerImage ? (
+                                    <img
+                                      src={frame.innerImage}
+                                      alt="Inner"
+                                      className="inner-image"
+                                      style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        borderRadius: frame.type === 'circle' ? '50%' : '0',
+                                      }}
                                     />
-                                    <label htmlFor={`innerImageInput-${frame.id}`} className="upload-btn">
-                                      <img src={AddIcon} alt="" />
-                                    </label>
-                                  </div>
-                                )}
+                                  ) : (
+                                    <div>
+                                      <input
+                                        type="file"
+                                        onChange={(e) => handleFileChange(e, frame.id)}
+                                        style={{ display: 'none' }}
+                                        id={`innerImageInput-${frame.id}`}
+                                      />
+                                      <label htmlFor={`innerImageInput-${frame.id}`} className="upload-btn">
+                                        <img src={AddIcon} alt="" />
+                                      </label>
+                                    </div>
+                                  )}
+                                </div>
+                                {/* Add Resizable Nodes */}
+                                <div
+                                  className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? "resize-node top-left" : ''}
+                                  onMouseDown={(e) => {
+                                    e.stopPropagation(); // Prevent drag from being triggered
+                                    handleResizeMouseDown(e, frame.id, 'topLeft');
+                                  }}>
+                                </div>
+                                <div
+                                  className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? "resize-node top-right" : ''}
+                                  onMouseDown={(e) => {
+                                    e.stopPropagation();
+                                    handleResizeMouseDown(e, frame.id, 'topRight');
+                                  }}>
+                                </div>
+                                <div
+                                  className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? "resize-node bottom-left" : ''}
+                                  onMouseDown={(e) => {
+                                    e.stopPropagation();
+                                    handleResizeMouseDown(e, frame.id, 'bottomLeft');
+                                  }}>
+                                </div>
+                                <div
+                                  className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? "resize-node bottom-right" : ''}
+                                  onMouseDown={(e) => {
+                                    e.stopPropagation();
+                                    handleResizeMouseDown(e, frame.id, 'bottomRight');
+                                  }}>
+                                </div>
                               </div>
                             </div>
-                            <button
-                              onClick={() => handleRemoveFrame(frame.id)}
-                              className={activeFrameId === frame.id ? '' : 'hide'}
-                            >
-                              <img className="remove" src={RemoveIcon} alt="" />
-                            </button>
                           </div>
                         ))}
                         {textFrames.map(textFrame => (
@@ -607,7 +687,7 @@ const DashboardEdit: React.FC = () => {
                           <div className="actions size-slider empty-div"></div>
                           :
                           <div className="actions size-slider">
-                            <button className="prev" onClick={() => { setFile(null); setPreviewUrl(null) }}>
+                            <button className="prev" onClick={() => { setFile(null); setPreviewUrl(null); setFrames([]) }}>
                               <img src={PrevIcon} alt="" />
                               <p>Prev</p>
                             </button>

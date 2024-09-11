@@ -22,7 +22,9 @@
   &.footer-no-bg {
     background-image: url("../assets/Ellipse5.svg"), url("../assets/logo4.svg");
     background-size: 20%;
-    background-position: left 10px, left -50px;
+    background-position:
+      left 10px,
+      left -50px;
     background-repeat: no-repeat, no-repeat;
   }
 
@@ -77,7 +79,7 @@
                 margin-bottom: 1rem;
                 padding: 0;
                 font-weight: bold;
-                font-family: 'Hanson', sans-serif;
+                font-family: "Hanson", sans-serif;
                 font-size: 18px;
                 color: #ffffff;
               }
@@ -92,7 +94,7 @@
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
                 font-size: 16px;
-                font-family: 'Montserrat', sans-serif;
+                font-family: "Montserrat", sans-serif;
                 cursor: pointer;
 
                 &:hover {
@@ -116,7 +118,7 @@
                   border-bottom: 1px solid transparent;
                   margin-left: 1rem;
                   font-size: 16px;
-                  font-family: 'Montserrat', sans-serif;
+                  font-family: "Montserrat", sans-serif;
                   cursor: pointer;
 
                   &:hover {
