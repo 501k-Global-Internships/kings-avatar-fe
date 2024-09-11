@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import x from '../assets/x-twitter.svg';
 import instagram from '../assets/instagram.svg';
 import fb from '../assets/fb.svg';
-import { FooterProps } from './AppInterface';
+import { FooterProps } from './Types';
 import linkedin from '../assets/linkedin.svg';
 import './Footer.scss'
 

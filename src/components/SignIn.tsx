@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { AxiosError } from 'axios';
 import axios from '../api/axios';
-import { ErrorResponse } from './AppInterface';
+import { ErrorResponse } from './Types';
 import Header from './Header';
 import googleIcon from '../assets/google.svg';
 import facebookIcon from '../assets/facebook.svg';
@@ -61,7 +61,12 @@ const SignIp: React.FC = () => {
 
   return (
     <div className="container">
-      <Header loginSignUp={false} setLoginSignUp={() => {}} selectedLink='home'/>
+      <Header
+        loginSignUp={false}
+        setLoginSignUp={() => { }}
+        selectedLink=''
+        getStarted={false}
+      />
       <div className="sign-up">
         <div className="content">
           <div className="body-text">
@@ -96,7 +101,7 @@ const SignIp: React.FC = () => {
                 <input
                   type={passwordVisible ? "text" : "password"}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder='Create password' />
+                  placeholder='Enter your password' />
                 <FontAwesomeIcon
                   icon={passwordVisible ? faEye : faEyeSlash}
                   className="eye-icon"

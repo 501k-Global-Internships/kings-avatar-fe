@@ -1,21 +1,30 @@
 import React from 'react';
+import { UntitledProjectProps } from './Types';
 import './UntitledProject.scss';
 
-interface UntitledProjectProps {
-  onSave: () => void;
-}
-
-const UntitledProject: React.FC<UntitledProjectProps> = ({ onSave }) => {
+const UntitledProject: React.FC<UntitledProjectProps> = ({ onSave, onShare, untitled, actions }) => {
   return (
     <div className="untitled">
       <div className="empty"></div>
-      <div className="text">
-        <p>Untitled Project</p>
-      </div>
-      <div className="actions">
-        <button className="save" onClick={onSave}>SAVE PROJECT</button>
-        <button className="share">SHARE</button>
-      </div>
+      {
+        untitled ?
+          <div className="text">
+            <p>Untitled Project</p>
+          </div>
+          :
+          <div className="text">
+          </div>
+      }
+      {
+        actions ?
+          <div className="actions">
+            <button className="save" onClick={onSave}>SAVE PROJECT</button>
+            <button className="share" onClick={onShare}>SHARE</button>
+          </div>
+          :
+          <div className="actions">
+          </div>
+      }
     </div>
   );
 }

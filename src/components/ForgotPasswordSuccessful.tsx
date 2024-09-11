@@ -1,14 +1,28 @@
-import React from 'react'
-import Header from './Header'
+import React, { useState } from 'react'
+import Header from './Header';
+import LoginSignUpModal from './LoginSignUpModal';
 import userIcon from '../assets/user.svg';
 import logo1 from '../assets/logo1.svg';
 import logo2 from '../assets/logo2.svg';
 import checkIcon from '../assets/Checked.svg'
 
 const ForgotPasswordSuccessful: React.FC = () => {
+  const [loginSignUp, setLoginSignUp] = useState<boolean>(false);
+
+  const closeModal = () => {
+    setLoginSignUp(false);
+  };
+
+
   return (
     <div className="container">
-      <Header loginSignUp={false} setLoginSignUp={() => { }} selectedLink='' />
+      <Header
+        loginSignUp={loginSignUp}
+        setLoginSignUp={setLoginSignUp}
+        selectedLink=''
+        getStarted={true}
+      />
+      {loginSignUp && <LoginSignUpModal closeModal={closeModal} />}
       <div className="sign-up">
         <div className="content">
           <div className="body-text">

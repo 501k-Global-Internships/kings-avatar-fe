@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import Header from './Header'
+import Header from './Header';
+import LoginSignUpModal from './LoginSignUpModal';
 import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import { AxiosError } from 'axios';
-import { ErrorResponse } from './AppInterface';
+import { ErrorResponse } from './Types';
 import userIcon from '../assets/user.svg';
 import logo1 from '../assets/logo1.svg';
 import logo2 from '../assets/logo2.svg';
@@ -17,6 +18,7 @@ const ResetPassword: React.FC = () => {
 
   const [passwordFocus, setPasswordFocus] = useState<Boolean>(false);
   const [validPassword, setValidPassword] = useState<Boolean>(false);
+  const [loginSignUp, setLoginSignUp] = useState<boolean>(false);
 
   const [passwordVisible, setPasswordVisible] = useState<Boolean>(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState<Boolean>(false);
@@ -36,8 +38,11 @@ const ResetPassword: React.FC = () => {
 
   useEffect(() => {
     setValidPassword(PWD_REGEX.test(newPassword));
-  }, [newPassword, PWD_REGEX])
+  }, [newPassword, PWD_REGEX]);
 
+  const closeModal = () => {
+    setLoginSignUp(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -75,7 +80,13 @@ const ResetPassword: React.FC = () => {
 
   return (
     <div className="container">
-      <Header loginSignUp={false} setLoginSignUp={() => { }} selectedLink='home' />
+      {loginSignUp && <LoginSignUpModal closeModal={closeModal} />}
+      <Header
+        loginSignUp={loginSignUp}
+        setLoginSignUp={setLoginSignUp}
+        selectedLink=''
+        getStarted={true}
+      />
       <div className="sign-up">
         <div className="content fgt-pwd">
           <div className="body-text">
@@ -104,7 +115,7 @@ const ResetPassword: React.FC = () => {
               </p>
             )}
             <form action="" onSubmit={handleSubmit}>
-            <div className="input">
+              <div className="input">
                 <input
                   type={passwordVisible ? "text" : "password"}
                   onChange={(e) => setNewPassword(e.target.value)}

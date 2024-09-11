@@ -6,7 +6,7 @@ import TextIcon from '../assets/ion_text.svg'
 import GalleryIcon from '../assets/tabler_photo.svg'
 import DownloadIcon from '../assets/downloads.svg'
 import ShareIcon from '../assets/octicon_share-24.svg'
-import { SideNavProps } from './AppInterface'
+import { SideNavProps } from './Types'
 import './SideNav.scss'
 
 const SideNav: React.FC<SideNavProps> = ({
@@ -34,7 +34,7 @@ const SideNav: React.FC<SideNavProps> = ({
               <img src={TextIcon} alt="" />
               <p>Text</p>
             </li>
-            <li className={`${currentTab === 'download' ? "active" : ""}`} onClick={() => { setModalOpen(true) }} >
+            <li className={`${currentTab === 'download' ? "active" : ""}`} onClick={() => { setModalOpen(true); onDownloadClick() }} >
               <img src={DownloadIcon} alt="" />
               <p>Download</p>
             </li>

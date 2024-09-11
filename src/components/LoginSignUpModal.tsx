@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { LoginSignUpModalProps } from './AppInterface'
+import { LoginSignUpModalProps } from './Types'
 import './LoginSignUpModal.scss'
 
 const LoginSIgnUpModal: React.FC<LoginSignUpModalProps>= ({ closeModal }) => {

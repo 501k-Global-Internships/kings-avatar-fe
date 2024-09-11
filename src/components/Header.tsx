@@ -2,10 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
-import { HeaderProps } from './AppInterface';
+import { HeaderProps } from './Types';
 import './Header.scss';
 
-const Header: React.FC<HeaderProps> = ({ loginSignUp, setLoginSignUp, selectedLink }) => {
+const Header: React.FC<HeaderProps> = ({ loginSignUp,
+  setLoginSignUp,
+  selectedLink,
+  getStarted }) => {
 
   return (
     <header>
@@ -25,12 +28,17 @@ const Header: React.FC<HeaderProps> = ({ loginSignUp, setLoginSignUp, selectedLi
             </ul>
           </nav>
         </div>
-        <div className="get-started">
-          <p onClick={() => setLoginSignUp(!loginSignUp)}>
-            Get Started
-            <FontAwesomeIcon className="icon" icon={loginSignUp ? faAngleUp : faAngleDown} />
-          </p>
-        </div>
+        {getStarted ?
+          <div className="get-started">
+            <p onClick={() => setLoginSignUp(!loginSignUp)}>
+              Get Started
+              <FontAwesomeIcon className="icon" icon={loginSignUp ? faAngleUp : faAngleDown} />
+            </p>
+          </div>
+          :
+          <div className="get-started bg-none">
+          </div>
+        }
       </div>
     </header>
   );

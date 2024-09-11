@@ -28,7 +28,12 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="container landing">
-      <Header loginSignUp={loginSignUp} setLoginSignUp={setLoginSignUp} selectedLink='home' />
+      <Header 
+      loginSignUp={loginSignUp} 
+      setLoginSignUp={setLoginSignUp} 
+      selectedLink='home' 
+      getStarted={true}
+      />
       {loginSignUp && <LoginSignUpModal closeModal={closeModal} />}
       <div className="sign-up dash">
         <div className="content">

@@ -8,7 +8,7 @@ export interface SideNavProps {
   onShapesClick: () => void;
   onTextsClick: () => void;
   onEditClick: () => void;
-  setModalOpen: (open: boolean) => void; 
+  setModalOpen: (open: boolean) => void;
 }
 
 export type FrameType = 'circle' | 'square';
@@ -30,6 +30,7 @@ export interface HeaderProps {
   loginSignUp: boolean;
   setLoginSignUp: React.Dispatch<React.SetStateAction<boolean>>;
   selectedLink: string
+  getStarted: boolean;
 }
 
 export interface FooterProps {
@@ -42,5 +43,13 @@ export interface LoginSignUpModalProps {
 
 export interface DownloadModalProps {
   setModalOpen: (open: boolean) => void;
+  setTexts: (open: boolean) => void;
+  handleDownloadClick: () => void;
 }
 
+export interface UntitledProjectProps {
+  onSave: () => void;
+  onShare: () => void;
+  actions: boolean;
+  untitled: boolean;
+}
