@@ -677,7 +677,14 @@ const DashboardEdit: React.FC = () => {
                             <img src={TextEffectsIcon} alt="" />
                             <p>Effects</p>
                           </button>
-                          <button className="next" onClick={() => { setModalOpen(true); setDownload(true); setTexts(false); setShapes(false) }}>
+                          <button className="next"
+                            onClick={() => {
+                              setModalOpen(true);
+                              setDownload(true);
+                              setTexts(false);
+                              setShapes(false)
+                            }}
+                          >
                             <img src={NextIcon} alt="" />
                             <p>Next</p>
                           </button>
@@ -687,7 +694,14 @@ const DashboardEdit: React.FC = () => {
                           <div className="actions size-slider empty-div"></div>
                           :
                           <div className="actions size-slider">
-                            <button className="prev" onClick={() => { setFile(null); setPreviewUrl(null); setFrames([]) }}>
+                            <button className="prev"
+                              onClick={() => {
+                                setFile(null);
+                                setPreviewUrl(null);
+                                setCroppedImageUrl(null);
+                                setFrames([])
+                              }}
+                            >
                               <img src={PrevIcon} alt="" />
                               <p>Prev</p>
                             </button>
