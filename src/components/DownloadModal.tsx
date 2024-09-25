@@ -5,7 +5,7 @@ import CopyIcon from '../assets/copy.svg';
 import RemoveIcon from '../assets/remove.svg';
 import { DownloadModalProps } from './Types';
 
-const DownloadModal: React.FC<DownloadModalProps> = ({ setModalOpen, setTexts, handleDownloadClick }) => {
+const DownloadModal: React.FC<DownloadModalProps> = ({ setModalOpen, setTexts, handleDownloadClick, handleShareClick }) => {
   const handleCloseModal = () => {
     setModalOpen(false);
     setTexts(true);
@@ -30,7 +30,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ setModalOpen, setTexts, h
           </div>
           <div className="to-do">
             <div className="copy">
-              <button>copy Link <img src={CopyIcon} alt="" /></button>
+              <button onClick={handleShareClick}>copy Link <img src={CopyIcon} alt="" /></button>
             </div>
             <div className="download">
               <button onClick={handleDownloadClick}>Download <img src={DownloadIcon} alt="" /></button>

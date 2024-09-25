@@ -169,6 +169,21 @@ header {
           }
         }
       }
+
+      .download {
+        width: auto;
+        height: 25px;
+        color: #ffffff;
+        border: none;
+        border-radius: 3px;
+        background: #3183ff;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: "Hanson", sans-serif;
+        line-height: 13.53px;
+        text-align: center;
+        cursor: pointer;
+      }
     }
   }
 }

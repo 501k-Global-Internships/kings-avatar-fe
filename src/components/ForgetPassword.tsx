@@ -96,7 +96,7 @@ const ForgetPassword: React.FC = () => {
                 placeholder='Enter your email address'
               />
               <div className="btn btn-reset">
-                <button type='submit'>Get reset link</button>
+                <button type='submit'>Send reset link</button>
               </div>
             </form>
           </div>

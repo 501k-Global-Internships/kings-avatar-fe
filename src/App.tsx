@@ -13,6 +13,7 @@ import ForgotPasswordSuccessful from './components/ForgotPasswordSuccessful';
 import AboutUs from './components/AboutUs';
 import ResetPassword from './components/ResetPassword';
 import ResetPasswordSuccessful from './components/ResetPasswordSuccessful';
+import GuestUser from './components/GuestUser';
 import './App.css';
 
 const App: React.FC = () => {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
         <Route path="/forgot-password-successful" element={<ForgotPasswordSuccessful />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/reset-password-successful" element={<ResetPasswordSuccessful />} />
+        <Route path="/guest/:id" element={<GuestUser />} />
       </Routes>
     </div>
   );

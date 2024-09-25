@@ -24,7 +24,7 @@ const DashboardGallery: React.FC = () => {
 
   return (
     <div className="container">
-      <DashboardHeader />
+      <DashboardHeader admin={true} handleDownloadClick={() => {}} />
       <div className="edit">
         <SideNav currentTab='gallery'
           onDownloadClick={() => { }}

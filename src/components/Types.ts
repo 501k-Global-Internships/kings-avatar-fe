@@ -33,6 +33,11 @@ export interface HeaderProps {
   getStarted: boolean;
 }
 
+export interface DashboardHeaderProps {
+  admin: boolean;
+  handleDownloadClick: () => void;
+}
+
 export interface FooterProps {
   backgroundImage: boolean;
 }
@@ -45,6 +50,7 @@ export interface DownloadModalProps {
   setModalOpen: (open: boolean) => void;
   setTexts: (open: boolean) => void;
   handleDownloadClick: () => void;
+  handleShareClick: () => void;
 }
 
 export interface UntitledProjectProps {
