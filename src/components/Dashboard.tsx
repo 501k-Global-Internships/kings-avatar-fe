@@ -10,7 +10,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container">
-      <DashboardHeader />
+      <DashboardHeader admin={true} handleDownloadClick={() => {}} />
       <div className="sign-up dashboard">
         <div className="content dbd-content">
           <div className="body-text dbd-text ">

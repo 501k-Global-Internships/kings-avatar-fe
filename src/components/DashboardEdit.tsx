@@ -1,34 +1,40 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { AxiosError } from 'axios';
-import html2canvas from 'html2canvas';
-import Draggable from 'react-draggable';
-import DashboardHeader from './DashboardHeader';
-import DownloadModal from './DownloadModal';
-import LoadingSpinner from './LoadingSpinner';
-import SideNav from './SideNav';
-import UntitledProject from './UntitledProject';
-import AddIcon from '../assets/add.svg';
-import FlipIcon from '../assets/flip.svg';
-import RotateIcon from '../assets/tabler_rotate.svg';
-import GalleryIcon from '../assets/tabler_photo.svg';
-import CircleIcon from '../assets/circle.svg';
-import SquareIcon from '../assets/square.svg';
-import RemoveIcon from '../assets/remove.svg';
-import FontIcon from '../assets/fontsize.svg';
-import TextEffectsIcon from '../assets/textEffects.svg';
-import NextIcon from '../assets/next.svg';
-import PrevIcon from '../assets/prev.svg';
-import axios from '../api/axios';
-import { ErrorResponse, Frame, FrameType, ImageText, ResizeCorner } from './Types';
-import { useGallery } from '../context/GalleryContext';
-import './App.scss';
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+import html2canvas from "html2canvas";
+import Draggable from "react-draggable";
+import DashboardHeader from "./DashboardHeader";
+import DownloadModal from "./DownloadModal";
+import LoadingSpinner from "./LoadingSpinner";
+import SideNav from "./SideNav";
+import UntitledProject from "./UntitledProject";
+import AddIcon from "../assets/add.svg";
+import FlipIcon from "../assets/flip.svg";
+import RotateIcon from "../assets/tabler_rotate.svg";
+import GalleryIcon from "../assets/tabler_photo.svg";
+import CircleIcon from "../assets/circle.svg";
+import SquareIcon from "../assets/square.svg";
+import RemoveIcon from "../assets/remove.svg";
+import FontIcon from "../assets/fontsize.svg";
+import TextEffectsIcon from "../assets/textEffects.svg";
+import NextIcon from "../assets/next.svg";
+import PrevIcon from "../assets/prev.svg";
+import axios from "../api/axios";
+import {
+  ErrorResponse,
+  Frame,
+  FrameType,
+  ImageText,
+  ResizeCorner,
+} from "./Types";
+import { useGallery } from "../context/GalleryContext";
+import "./App.scss";
 
 const DashboardEdit: React.FC = () => {
   const { galleryImages, setGalleryImages, setProjectImages } = useGallery();
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [errMsg, setErrMsg] = useState<{ msg: string }[] | string>('');
+  const [errMsg, setErrMsg] = useState<{ msg: string }[] | string>("");
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
@@ -39,7 +45,7 @@ const DashboardEdit: React.FC = () => {
   const [flipVertical, setFlipVertical] = useState<boolean>(false);
 
   const [changePhoto, setChangePhoto] = useState<boolean>(false);
-  const [selectedButton, setSelectedButton] = useState<string>('');
+  const [selectedButton, setSelectedButton] = useState<string>("");
   const [rotate, setRotate] = useState<number>(0);
   const [shapes, setShapes] = useState<boolean>(false);
   const [download, setDownload] = useState<boolean>(false);
@@ -47,17 +53,26 @@ const DashboardEdit: React.FC = () => {
   const [frameSize] = useState<number>(150);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const [framePosition] = useState<{ top: number; left: number }>({ top: 100, left: 200 });
+  const [framePosition] = useState<{ top: number; left: number }>({
+    top: 0,
+    left: 0,
+  });
   const [innerImage] = useState<string | null>(null);
   const [dragging, setDragging] = useState<number | null>(null);
   const [frames, setFrames] = useState<Frame[]>([]);
-  const [resizing, setResizing] = useState<{ id: number; corner: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' } | null>(null);
+  const [resizing, setResizing] = useState<{
+    id: number;
+    corner: "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
+  } | null>(null);
 
   const [textFrameSize] = useState<number>(150);
   const [textFrameHeight] = useState<number>(15);
   const [textFrames, setTextFrames] = useState<ImageText[]>([]);
   const [texts, setTexts] = useState<boolean>(false);
-  const [activeFrameId, setActiveFrameId] = useState<{ frameId: number | null; activeFrame: boolean }>({ frameId: null, activeFrame: false });
+  const [activeFrameId, setActiveFrameId] = useState<{
+    frameId: number | null;
+    activeFrame: boolean;
+  }>({ frameId: null, activeFrame: false });
   const [textFrameAppear, setTextFrameAppear] = useState<boolean | null>(true);
 
   const errRef = useRef<HTMLParagraphElement>(null);
@@ -74,21 +89,21 @@ const DashboardEdit: React.FC = () => {
   useEffect(() => {
     const getGalleryImages = async () => {
       try {
-        const cachedImages = localStorage.getItem('galleryImages');
+        const cachedImages = localStorage.getItem("galleryImages");
 
         if (cachedImages?.length) {
           setGalleryImages(JSON.parse(cachedImages));
         } else {
-          const response = await axios.get('/upload/gallery', {
+          const response = await axios.get("/upload/gallery", {
             headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: 'Bearer ' + localStorage.getItem('token'),
+              "Content-Type": "multipart/form-data",
+              Authorization: "Bearer " + localStorage.getItem("token"),
             },
             withCredentials: true,
           });
 
           setGalleryImages(response.data);
-          localStorage.setItem('galleryImages', JSON.stringify(response.data));
+          localStorage.setItem("galleryImages", JSON.stringify(response.data));
         }
       } catch (err) {
         const error = err as AxiosError<ErrorResponse>;
@@ -97,7 +112,7 @@ const DashboardEdit: React.FC = () => {
           if (Array.isArray(error.response.data.errors)) {
             setErrMsg(error.response.data.errors);
           } else if (error.response.status === 401) {
-            navigate('/sign-in', { state: { from: location }, replace: true });
+            navigate("/sign-in", { state: { from: location }, replace: true });
           } else {
             setErrMsg([{ msg: error.response.data.message }]);
           }
@@ -115,26 +130,34 @@ const DashboardEdit: React.FC = () => {
     const handleMouseMove = (e: MouseEvent) => {
       if (dragging !== null && imgSectionRef.current) {
         const containerRect = imgSectionRef.current.getBoundingClientRect();
-        const frame = frames.find(f => f.id === dragging);
+        const frame = frames.find((f) => f.id === dragging);
 
         if (frame) {
           const newTop = e.clientY - containerRect.top - frame.size / 2;
           const newLeft = e.clientX - containerRect.left - frame.size / 2;
 
-          setFrames(frames.map(f =>
-            f.id === dragging
-              ? {
-                ...f,
-                position: {
-                  top: Math.max(0, Math.min(newTop, containerRect.height - frame.size)),
-                  left: Math.max(0, Math.min(newLeft, containerRect.width - frame.size)),
-                }
-              }
-              : f
-          ));
+          setFrames(
+            frames.map((f) =>
+              f.id === dragging
+                ? {
+                    ...f,
+                    position: {
+                      top: Math.max(
+                        0,
+                        Math.min(newTop, containerRect.height - frame.size)
+                      ),
+                      left: Math.max(
+                        0,
+                        Math.min(newLeft, containerRect.width - frame.size)
+                      ),
+                    },
+                  }
+                : f
+            )
+          );
         }
       } else if (resizing !== null && imgSectionRef.current) {
-        const frame = frames.find(f => f.id === resizing.id);
+        const frame = frames.find((f) => f.id === resizing.id);
 
         if (frame) {
           const containerRect = imgSectionRef.current.getBoundingClientRect();
@@ -143,36 +166,54 @@ const DashboardEdit: React.FC = () => {
           let newLeft = frame.position.left;
 
           switch (resizing.corner) {
-            case 'topLeft':
-              newSize = Math.max(frame.size + (frame.position.top - (e.clientY - containerRect.top)), 0);
-              newTop = Math.max(e.clientY - containerRect.top, 0);
-              newLeft = Math.max(e.clientX - containerRect.left, 0);
-              break;
-            case 'topRight':
-              newSize = Math.max(e.clientX - containerRect.left - frame.position.left, 0);
-              newTop = Math.max(e.clientY - containerRect.top, 0);
-              break;
-            case 'bottomLeft':
-              newSize = Math.max(e.clientY - containerRect.top - frame.position.top, 0);
-              newLeft = Math.max(e.clientX - containerRect.left, 0);
-              break;
-            case 'bottomRight':
+            case "topLeft":
               newSize = Math.max(
-                Math.min(e.clientX - containerRect.left, e.clientY - containerRect.top) - frame.position.left,
+                frame.size +
+                  (frame.position.top - (e.clientY - containerRect.top)),
+                0
+              );
+              newTop = Math.max(e.clientY - containerRect.top, 0);
+              newLeft = Math.max(e.clientX - containerRect.left, 0);
+              break;
+            case "topRight":
+              newSize = Math.max(
+                e.clientX - containerRect.left - frame.position.left,
+                0
+              );
+              newTop = Math.max(e.clientY - containerRect.top, 0);
+              break;
+            case "bottomLeft":
+              newSize = Math.max(
+                e.clientY - containerRect.top - frame.position.top,
+                0
+              );
+              newLeft = Math.max(e.clientX - containerRect.left, 0);
+              break;
+            case "bottomRight":
+              newSize = Math.max(
+                Math.min(
+                  e.clientX - containerRect.left,
+                  e.clientY - containerRect.top
+                ) - frame.position.left,
                 0
               );
               break;
           }
 
-          setFrames(frames.map(f =>
-            f.id === resizing.id
-              ? {
-                ...f,
-                size: Math.min(newSize, containerRect.width - f.position.left),
-                position: { top: newTop, left: newLeft }
-              }
-              : f
-          ));
+          setFrames(
+            frames.map((f) =>
+              f.id === resizing.id
+                ? {
+                    ...f,
+                    size: Math.min(
+                      newSize,
+                      containerRect.width - f.position.left
+                    ),
+                    position: { top: newTop, left: newLeft },
+                  }
+                : f
+            )
+          );
         }
       }
     };
@@ -182,12 +223,12 @@ const DashboardEdit: React.FC = () => {
       setResizing(null);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [dragging, resizing, frames]);
 
@@ -204,15 +245,15 @@ const DashboardEdit: React.FC = () => {
       setFile(selectedFile);
 
       const formData = new FormData();
-      formData.append('image', selectedFile);
+      formData.append("image", selectedFile);
 
       try {
-        const response = await axios.post('/upload/gallery', formData, {
+        const response = await axios.post("api/upload/gallery", formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: 'Bearer ' + localStorage.getItem('token'),
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
-          withCredentials: true
+          withCredentials: true,
         });
 
         setPreviewUrl(response.data.url);
@@ -224,8 +265,8 @@ const DashboardEdit: React.FC = () => {
           if (Array.isArray(error.response.data.errors)) {
             setErrMsg(error.response.data.errors);
           } else if (error.response.status === 401) {
-            setErrMsg('Unauthorized! Please Sign In.');
-            navigate('/sign-in', { state: { from: location }, replace: true });
+            setErrMsg("Unauthorized! Please Sign In.");
+            navigate("/sign-in", { state: { from: location }, replace: true });
           } else {
             setErrMsg([{ msg: error.response.data.message }]);
           }
@@ -241,21 +282,80 @@ const DashboardEdit: React.FC = () => {
     if (croppedImageUrl) {
       const canvas = await html2canvas(imgSectionRef.current as HTMLElement);
 
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
-      link.download = 'kings-avatar.jpg';
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "kings-avatar.jpg";
       link.click();
     }
   };
 
-  const renderTransformedImage = (imageSrc: string, flipH: boolean, flipV: boolean, rotation: number): Promise<string> => {
+  const handleShareClick = async () => {
+    if (!croppedImageUrl) {
+      alert("No image available to share.");
+      return;
+    }
+
+    const framesData = frames.map((frame) => ({
+      id: frame.id,
+      position: frame.position,
+      size: frame.size,
+      type: frame.type,
+      innerImage: frame.innerImage,
+    }));
+
+    try {
+      const response = await axios.post(
+        "/api/share-data",
+        JSON.stringify({ image: croppedImageUrl, framesData }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        const sharedId = response.data.data.id;
+        const shareableLink = `${window.location.origin}/guest/${sharedId}`;
+
+        await navigator.clipboard.writeText(shareableLink);
+        alert("Image shared successfully! Link copied to clipboard.");
+      } else {
+        alert("Error sharing image: " + response.data.message);
+      }
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+
+      if (error.response && error.response.data) {
+        if (Array.isArray(error.response.data.errors)) {
+          setErrMsg(error.response.data.errors);
+        } else if (error.response.status === 401) {
+          setErrMsg("Unauthorized! Please Sign In.");
+          navigate("/sign-in", { state: { from: location }, replace: true });
+        } else {
+          setErrMsg([{ msg: error.response.data.message }]);
+        }
+      } else {
+        setErrMsg([{ msg: "No Server Response!" }]);
+      }
+      errRef?.current?.focus();
+    }
+  };
+
+  const renderTransformedImage = (
+    imageSrc: string,
+    flipH: boolean,
+    flipV: boolean,
+    rotation: number
+  ): Promise<string> => {
     return new Promise((resolve, reject) => {
       const image = new Image();
       image.src = imageSrc;
-      image.crossOrigin = 'anonymous';
+      image.crossOrigin = "anonymous";
       image.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
         const normalizedRotation = rotation % 360;
@@ -273,7 +373,7 @@ const DashboardEdit: React.FC = () => {
         ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
         ctx.drawImage(image, -image.width / 2, -image.height / 2);
 
-        const dataUrl = canvas.toDataURL('image/jpeg');
+        const dataUrl = canvas.toDataURL("image/jpeg");
         resolve(dataUrl);
       };
       image.onerror = (error) => reject(error);
@@ -283,7 +383,12 @@ const DashboardEdit: React.FC = () => {
   useEffect(() => {
     const updateImage = async () => {
       if (previewUrl) {
-        const transformedImageUrl = await renderTransformedImage(previewUrl, flipHorizontal, flipVertical, rotate);
+        const transformedImageUrl = await renderTransformedImage(
+          previewUrl,
+          flipHorizontal,
+          flipVertical,
+          rotate
+        );
         setCroppedImageUrl(transformedImageUrl);
       }
     };
@@ -295,31 +400,31 @@ const DashboardEdit: React.FC = () => {
     if (imgSectionRef.current) {
       try {
         const canvas = await html2canvas(imgSectionRef.current as HTMLElement);
-        const combinedImageUrl = canvas.toDataURL('image/png');
+        const combinedImageUrl = canvas.toDataURL("image/png");
 
-        setProjectImages(prevImages => {
+        setProjectImages((prevImages) => {
           const updatedImages = [...prevImages, combinedImageUrl];
-          localStorage.setItem('projectImages', JSON.stringify(updatedImages));
+          localStorage.setItem("projectImages", JSON.stringify(updatedImages));
           return updatedImages;
         });
 
-        navigate('/dashboard-projects');
+        navigate("/dashboard-projects");
       } catch (error) {
-        console.error('Error rendering combined image:', error);
+        console.error("Error rendering combined image:", error);
       }
     }
   };
 
   const handleRotate = (angle: number) => {
-    setFlip(false)
-    setChangePhoto(false)
+    setFlip(false);
+    setChangePhoto(false);
     setRotate((prevRotate) => prevRotate + angle);
   };
 
-  const handleFlip = (direction: 'horizontal' | 'vertical') => {
-    if (direction === 'horizontal') {
+  const handleFlip = (direction: "horizontal" | "vertical") => {
+    if (direction === "horizontal") {
       setFlipHorizontal(!flipHorizontal);
-    } else if (direction === 'vertical') {
+    } else if (direction === "vertical") {
       setFlipVertical(!flipVertical);
     }
   };
@@ -347,68 +452,100 @@ const DashboardEdit: React.FC = () => {
   };
 
   const handleFrameChange = (id: number, updatedFrame: Frame) => {
-    setFrames(frames.map(frame => frame.id === id ? updatedFrame : frame));
+    setFrames(frames.map((frame) => (frame.id === id ? updatedFrame : frame)));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, id: number) => {
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    id: number
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        handleFrameChange(id, { ...frames.find(frame => frame.id === id)!, innerImage: reader.result as string });
+        handleFrameChange(id, {
+          ...frames.find((frame) => frame.id === id)!,
+          innerImage: reader.result as string,
+        });
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleRemoveFrame = (id: number) => {
-    setFrames(frames.filter(frame => frame.id !== id));
+    setFrames(frames.filter((frame) => frame.id !== id));
   };
 
   const handleRemoveTextFrame = (id: number) => {
-    setTextFrames(textFrames.filter(frame => frame.id !== id));
+    setTextFrames(textFrames.filter((frame) => frame.id !== id));
   };
 
-  const handleResizeMouseDown = (e: React.MouseEvent, frameId: number, corner: ResizeCorner) => {
+  const handleResizeMouseDown = (
+    e: React.MouseEvent,
+    frameId: number,
+    corner: ResizeCorner
+  ) => {
     e.preventDefault();
     setResizing({ id: frameId, corner });
   };
 
   return (
     <div className="container">
-      <DashboardHeader />
+      <DashboardHeader admin={true} handleDownloadClick={() => {}} />
       <div className="edit">
         <SideNav
-          currentTab={shapes ? 'shapes' : texts ? 'text' : download ? 'download' : 'edit'}
-          onShapesClick={() => { setShapes(true); setTexts(false); setDownload(false) }}
-          onEditClick={() => { setShapes(false); setTexts(false); setDownload(false) }}
-          onTextsClick={() => { setTexts(true); setShapes(false); setDownload(false) }}
-          onDownloadClick={() => { setDownload(true); setShapes(false); setTexts(false) }}
+          currentTab={
+            shapes ? "shapes" : texts ? "text" : download ? "download" : "edit"
+          }
+          onShapesClick={() => {
+            setShapes(true);
+            setTexts(false);
+            setDownload(false);
+          }}
+          onEditClick={() => {
+            setShapes(false);
+            setTexts(false);
+            setDownload(false);
+          }}
+          onTextsClick={() => {
+            setTexts(true);
+            setShapes(false);
+            setDownload(false);
+          }}
+          onDownloadClick={() => {
+            setDownload(true);
+            setShapes(false);
+            setTexts(false);
+          }}
           setModalOpen={setModalOpen}
         />
         <div className="body">
           <div className="project">
             <UntitledProject
               onSave={handleSaveProject}
-              onShare={() => { }}
+              onShare={() => {}}
               untitled={true}
               actions={true}
             />
-            {file || previewUrl ?
+            {file || previewUrl ? (
               <div className="cnt">
                 <div className="img-section">
-                  {modalOpen &&
+                  {modalOpen && (
                     <DownloadModal
                       setModalOpen={setModalOpen}
                       setTexts={setTexts}
-                      handleDownloadClick={handleDownloadClick} />
-                  }
+                      handleDownloadClick={handleDownloadClick}
+                      handleShareClick={handleShareClick}
+                    />
+                  )}
                   {Array.isArray(errMsg) ? (
                     errMsg.map((error, index) => (
-                      <p key={index}
+                      <p
+                        key={index}
                         ref={index === 0 ? errRef : null}
                         className={errMsg ? "errmsg" : "offscreen"}
-                        aria-live="assertive">
+                        aria-live="assertive"
+                      >
                         {error.msg}
                       </p>
                     ))
@@ -416,332 +553,508 @@ const DashboardEdit: React.FC = () => {
                     <p
                       ref={errRef}
                       className={errMsg ? "errmsg" : "offscreen"}
-                      aria-live="assertive">
+                      aria-live="assertive"
+                    >
                       {errMsg}
                     </p>
                   )}
-                  <div className="import preview" style={{ position: 'relative' }}>
-                    {loading && !previewUrl ?
+                  <div
+                    className="import preview"
+                    style={{ position: "relative" }}
+                  >
+                    {loading && !previewUrl ? (
                       <LoadingSpinner loading={loading} />
-                      :
-                      <div className="img-container" ref={imgSectionRef}>
-                        <img
-                          src={croppedImageUrl ? croppedImageUrl : (previewUrl as string)}
-                          alt="Uploaded"
-                          className="main-image"
-                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                        />
-                        {frames.map(frame => (
-                          <div
-                            className="frame-cnt"
+                    ) : (
+                      <div
+                        className="img-container"
+                        ref={imgSectionRef}
+                        style={{
+                          width: "450px",
+                          height: "450px",
+                        }}
+                      >
+                        <div
+                          className="img"
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "100%",
+                            height: "100%",
+                            position: "relative",
+                          }}
+                        >
+                          <img
+                            src={
+                              croppedImageUrl
+                                ? croppedImageUrl
+                                : (previewUrl as string)
+                            }
+                            alt="Uploaded"
+                            className="main-image"
                             style={{
-                              position: 'absolute',
-                              top: frame.position.top,
-                              left: frame.position.left,
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "contain",
                             }}
-                          >
-                            <div className="btn">
-                              <button
-                                onClick={() => handleRemoveFrame(frame.id)}
-                                className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? '' : 'hide'}
-                              >
-                                <img className="remove" src={RemoveIcon} alt="" />
-                              </button>
-                            </div>
+                          />
+                          {frames.map((frame) => (
                             <div
+                              className="frame-cnt"
                               key={frame.id}
-                              className="frame-section"
                               style={{
-                                width: frame.size,
-                                height: frame.size,
+                                position: "absolute",
+                                top: frame.position.top,
+                                left: frame.position.left,
                               }}
-                              onMouseUp={() => setActiveFrameId({ frameId: frame.id, activeFrame: true })}
                             >
+                              <div className="btn">
+                                <button
+                                  onClick={() => handleRemoveFrame(frame.id)}
+                                  className={
+                                    activeFrameId.frameId === frame.id &&
+                                    activeFrameId.activeFrame
+                                      ? ""
+                                      : "hide"
+                                  }
+                                >
+                                  <img
+                                    className="remove"
+                                    src={RemoveIcon}
+                                    alt=""
+                                  />
+                                </button>
+                              </div>
                               <div
-                                className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? 'frame-border' : 'frame-border hide'}
+                                className="frame-section"
                                 style={{
                                   width: frame.size,
                                   height: frame.size,
-                                  top: 0,
-                                  left: 0,
-                                  position: 'absolute',
                                 }}
-                                onMouseDown={() => handleMouseDown(frame.id)}
+                                onMouseUp={() =>
+                                  setActiveFrameId({
+                                    frameId: frame.id,
+                                    activeFrame: true,
+                                  })
+                                }
                               >
                                 <div
-                                  className={`frame ${frame.type}`}
+                                  className={
+                                    activeFrameId.frameId === frame.id &&
+                                    activeFrameId.activeFrame
+                                      ? "frame-border"
+                                      : "frame-border hide"
+                                  }
                                   style={{
                                     width: frame.size,
                                     height: frame.size,
-                                    borderRadius: frame.type === 'circle' ? '50%' : '0',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    overflow: 'hidden',
-                                    cursor: 'move',
+                                    top: 0,
+                                    left: 0,
+                                    position: "absolute",
                                   }}
-                                  onDoubleClick={() => setActiveFrameId({ frameId: null, activeFrame: false })}
+                                  onMouseDown={() => handleMouseDown(frame.id)}
                                 >
-                                  {frame.innerImage ? (
-                                    <img
-                                      src={frame.innerImage}
-                                      alt="Inner"
-                                      className="inner-image"
-                                      style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'cover',
-                                        borderRadius: frame.type === 'circle' ? '50%' : '0',
-                                      }}
-                                    />
-                                  ) : (
-                                    <div>
-                                      <input
-                                        type="file"
-                                        onChange={(e) => handleFileChange(e, frame.id)}
-                                        style={{ display: 'none' }}
-                                        id={`innerImageInput-${frame.id}`}
+                                  <div
+                                    className={`frame ${frame.type}`}
+                                    style={{
+                                      width: frame.size,
+                                      height: frame.size,
+                                      borderRadius:
+                                        frame.type === "circle" ? "50%" : "0",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      overflow: "hidden",
+                                      cursor: "move",
+                                    }}
+                                    onDoubleClick={() =>
+                                      setActiveFrameId({
+                                        frameId: null,
+                                        activeFrame: false,
+                                      })
+                                    }
+                                  >
+                                    {frame.innerImage ? (
+                                      <img
+                                        src={frame.innerImage}
+                                        alt="Inner"
+                                        className="inner-image"
+                                        style={{
+                                          width: "100%",
+                                          height: "100%",
+                                          objectFit: "cover",
+                                          borderRadius:
+                                            frame.type === "circle"
+                                              ? "50%"
+                                              : "0",
+                                        }}
                                       />
-                                      <label htmlFor={`innerImageInput-${frame.id}`} className="upload-btn">
-                                        <img src={AddIcon} alt="" />
-                                      </label>
-                                    </div>
-                                  )}
-                                </div>
-                                {/* Add Resizable Nodes */}
-                                <div
-                                  className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? "resize-node top-left" : ''}
-                                  onMouseDown={(e) => {
-                                    e.stopPropagation(); // Prevent drag from being triggered
-                                    handleResizeMouseDown(e, frame.id, 'topLeft');
-                                  }}>
-                                </div>
-                                <div
-                                  className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? "resize-node top-right" : ''}
-                                  onMouseDown={(e) => {
-                                    e.stopPropagation();
-                                    handleResizeMouseDown(e, frame.id, 'topRight');
-                                  }}>
-                                </div>
-                                <div
-                                  className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? "resize-node bottom-left" : ''}
-                                  onMouseDown={(e) => {
-                                    e.stopPropagation();
-                                    handleResizeMouseDown(e, frame.id, 'bottomLeft');
-                                  }}>
-                                </div>
-                                <div
-                                  className={activeFrameId.frameId === frame.id && activeFrameId.activeFrame ? "resize-node bottom-right" : ''}
-                                  onMouseDown={(e) => {
-                                    e.stopPropagation();
-                                    handleResizeMouseDown(e, frame.id, 'bottomRight');
-                                  }}>
+                                    ) : (
+                                      <div>
+                                        <input
+                                          type="file"
+                                          onChange={(e) =>
+                                            handleFileChange(e, frame.id)
+                                          }
+                                          style={{ display: "none" }}
+                                          id={`innerImageInput-${frame.id}`}
+                                        />
+                                        <label
+                                          htmlFor={`innerImageInput-${frame.id}`}
+                                          className="upload-btn"
+                                        >
+                                          <img src={AddIcon} alt="" />
+                                        </label>
+                                      </div>
+                                    )}
+                                  </div>
+                                  {/* Add Resizable Nodes */}
+                                  <div
+                                    className={
+                                      activeFrameId.frameId === frame.id &&
+                                      activeFrameId.activeFrame
+                                        ? "resize-node top-left"
+                                        : ""
+                                    }
+                                    onMouseDown={(e) => {
+                                      e.stopPropagation(); // Prevent drag from being triggered
+                                      handleResizeMouseDown(
+                                        e,
+                                        frame.id,
+                                        "topLeft"
+                                      );
+                                    }}
+                                  ></div>
+                                  <div
+                                    className={
+                                      activeFrameId.frameId === frame.id &&
+                                      activeFrameId.activeFrame
+                                        ? "resize-node top-right"
+                                        : ""
+                                    }
+                                    onMouseDown={(e) => {
+                                      e.stopPropagation();
+                                      handleResizeMouseDown(
+                                        e,
+                                        frame.id,
+                                        "topRight"
+                                      );
+                                    }}
+                                  ></div>
+                                  <div
+                                    className={
+                                      activeFrameId.frameId === frame.id &&
+                                      activeFrameId.activeFrame
+                                        ? "resize-node bottom-left"
+                                        : ""
+                                    }
+                                    onMouseDown={(e) => {
+                                      e.stopPropagation();
+                                      handleResizeMouseDown(
+                                        e,
+                                        frame.id,
+                                        "bottomLeft"
+                                      );
+                                    }}
+                                  ></div>
+                                  <div
+                                    className={
+                                      activeFrameId.frameId === frame.id &&
+                                      activeFrameId.activeFrame
+                                        ? "resize-node bottom-right"
+                                        : ""
+                                    }
+                                    onMouseDown={(e) => {
+                                      e.stopPropagation();
+                                      handleResizeMouseDown(
+                                        e,
+                                        frame.id,
+                                        "bottomRight"
+                                      );
+                                    }}
+                                  ></div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                        {textFrames.map(textFrame => (
-                          <div
-                            key={textFrame.id}
-                            style={{
-                              position: 'absolute',
-                              top: textFrame.framePosition.top,
-                              left: textFrame.framePosition.left,
-                            }}
-                          >
-                            <Draggable
-                              onStart={() => setTextFrameAppear(false)}
-                              onDrag={() => setTextFrameAppear(true)}
+                          ))}
+                          {textFrames.map((textFrame) => (
+                            <div
+                              key={textFrame.id}
+                              style={{
+                                position: "absolute",
+                                top: textFrame.framePosition.top,
+                                left: textFrame.framePosition.left,
+                              }}
                             >
-                              <div className="text-frame"
-                                style={{
-                                  width: `${textFrame.textFrameSize + 30}px`,
-                                }}
+                              <Draggable
+                                onStart={() => setTextFrameAppear(false)}
+                                onDrag={() => setTextFrameAppear(true)}
                               >
-                                <div className="frame"
-                                  ref={textRef}
+                                <div
+                                  className="text-frame"
                                   style={{
-                                    width: `${textFrame.textFrameSize}px`,
-                                    height: `${textFrame.textFrameHeight}px`,
-                                    paddingTop: 10,
-                                    paddingBottom: 12,
-                                    border: textFrameAppear === true || null ? '1px solid #3183FF' : 'none',
-                                    resize: textFrameAppear === true || null ? 'both' : 'none',
-                                    overflow: 'auto',
-                                    background: 'none',
-                                    color: 'white',
-                                    fontWeight: '500',
-                                    lineHeight: '10px',
-                                    outline: 'none',
-                                    textAlign: 'center',
-                                    textDecoration: 'none',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
+                                    width: `${textFrame.textFrameSize + 30}px`,
                                   }}
-                                  contentEditable
-                                  suppressContentEditableWarning={true}
                                 >
-                                  TEXT HERE
+                                  <div
+                                    className="frame"
+                                    ref={textRef}
+                                    style={{
+                                      width: `${textFrame.textFrameSize}px`,
+                                      height: `${textFrame.textFrameHeight}px`,
+                                      paddingTop: 10,
+                                      paddingBottom: 12,
+                                      border:
+                                        textFrameAppear === true || null
+                                          ? "1px solid #3183FF"
+                                          : "none",
+                                      resize:
+                                        textFrameAppear === true || null
+                                          ? "both"
+                                          : "none",
+                                      overflow: "auto",
+                                      background: "none",
+                                      color: "white",
+                                      fontWeight: "500",
+                                      lineHeight: "10px",
+                                      outline: "none",
+                                      textAlign: "center",
+                                      textDecoration: "none",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                    contentEditable
+                                    suppressContentEditableWarning={true}
+                                  >
+                                    TEXT HERE
+                                  </div>
+                                  <button
+                                    onClick={() =>
+                                      handleRemoveTextFrame(textFrame.id)
+                                    }
+                                    className={
+                                      textFrameAppear === true || null
+                                        ? "btn"
+                                        : "btn hide"
+                                    }
+                                  >
+                                    <img
+                                      className="remove"
+                                      src={RemoveIcon}
+                                      alt=""
+                                    />
+                                  </button>
                                 </div>
-                                <button
-                                  onClick={() => handleRemoveTextFrame(textFrame.id)}
-                                  className={textFrameAppear === true || null ? 'btn' : 'btn hide'}
-                                >
-                                  <img className="remove" src={RemoveIcon} alt="" />
-                                </button>
-                              </div>
-                            </Draggable>
-                          </div>
-                        ))}
+                              </Draggable>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    }
+                    )}
                   </div>
-                  <div className='action-center'>
+                  <div className="action-center">
                     <div className="more-actions">
-                      <div className={`change-photo ${changePhoto ? '' : 'hidden'}`}>
+                      <div
+                        className={`change-photo ${
+                          changePhoto ? "" : "hidden"
+                        }`}
+                      >
                         <button
-                          className={selectedButton === 'gallery' ? 'active' : ''}
+                          className={
+                            selectedButton === "gallery" ? "active" : ""
+                          }
                           onClick={() => {
                             setIsVisible(!isVisible);
-                            setSelectedButton('gallery');
+                            setSelectedButton("gallery");
                           }}
                         >
                           Gallery
                         </button>
                         <label
                           htmlFor="galleryInput"
-                          className={selectedButton === 'import' ? 'active' : ''}
+                          className={
+                            selectedButton === "import" ? "active" : ""
+                          }
                           onClick={() => {
-                            setSelectedButton('import');
+                            setSelectedButton("import");
                             setIsVisible(false);
                           }}
                         >
                           Import
                         </label>
-                        <input type="file" id="galleryInput" style={{ display: 'none', cursor: 'pointer' }} onChange={onFileChange} />
+                        <input
+                          type="file"
+                          id="galleryInput"
+                          style={{ display: "none", cursor: "pointer" }}
+                          onChange={onFileChange}
+                        />
                       </div>
-                      <div className={`flip ${flip ? '' : 'hidden'}`}>
+                      <div className={`flip ${flip ? "" : "hidden"}`}>
                         <button
-                          className={selectedButton === 'vertical' ? 'active' : ''}
+                          className={
+                            selectedButton === "vertical" ? "active" : ""
+                          }
                           onClick={() => {
-                            handleFlip('vertical');
-                            setSelectedButton('vertical')
+                            handleFlip("vertical");
+                            setSelectedButton("vertical");
                           }}
                         >
                           Vertical
                         </button>
                         <button
-                          className={selectedButton === 'horizontal' ? 'active' : ''}
+                          className={
+                            selectedButton === "horizontal" ? "active" : ""
+                          }
                           onClick={() => {
-                            handleFlip('horizontal');
-                            setSelectedButton('horizontal')
+                            handleFlip("horizontal");
+                            setSelectedButton("horizontal");
                           }}
                         >
                           Horizontal
                         </button>
                       </div>
                     </div>
-                    {shapes ?
+                    {shapes ? (
                       <div className={`actions size-slider`}>
-                        <button className="prev" onClick={() => { setShapes(false); setTexts(false); setDownload(false) }}>
+                        <button
+                          className="prev"
+                          onClick={() => {
+                            setShapes(false);
+                            setTexts(false);
+                            setDownload(false);
+                          }}
+                        >
                           <img src={PrevIcon} alt="" />
                           <p>Prev</p>
                         </button>
-                        <button className="crop" onClick={() => handleFrameTypeChange('circle')}>
+                        <button
+                          className="crop"
+                          onClick={() => handleFrameTypeChange("circle")}
+                        >
                           <img src={CircleIcon} alt="" />
                           <p>Circle</p>
                         </button>
-                        <button className="rotate square" onClick={() => handleFrameTypeChange('square')}>
+                        <button
+                          className="rotate square"
+                          onClick={() => handleFrameTypeChange("square")}
+                        >
                           <img src={SquareIcon} alt="" />
                           <p>Square</p>
                         </button>
-                        <button className="next" onClick={() => { setTexts(true); setShapes(false) }}>
+                        <button
+                          className="next"
+                          onClick={() => {
+                            setTexts(true);
+                            setShapes(false);
+                          }}
+                        >
                           <img src={NextIcon} alt="" />
                           <p>Next</p>
                         </button>
                       </div>
-                      :
-                      texts ?
-                        <div className="actions size-slider">
-                          <button className="prev" onClick={() => { setShapes(true) }}>
-                            <img src={PrevIcon} alt="" />
-                            <p>Prev</p>
-                          </button>
-                          <button className="crop" onClick={handleTextFrame}>
-                            <img src={FontIcon} alt="" />
-                            <p>Font</p>
-                          </button>
-                          <button className="rotate square">
-                            <img src={TextEffectsIcon} alt="" />
-                            <p>Effects</p>
-                          </button>
-                          <button className="next"
-                            onClick={() => {
-                              setModalOpen(true);
-                              setDownload(true);
-                              setTexts(false);
-                              setShapes(false)
-                            }}
-                          >
-                            <img src={NextIcon} alt="" />
-                            <p>Next</p>
-                          </button>
-                        </div>
-                        :
-                        download ?
-                          <div className="actions size-slider empty-div"></div>
-                          :
-                          <div className="actions size-slider">
-                            <button className="prev"
-                              onClick={() => {
-                                setFile(null);
-                                setPreviewUrl(null);
-                                setCroppedImageUrl(null);
-                                setFrames([])
-                              }}
-                            >
-                              <img src={PrevIcon} alt="" />
-                              <p>Prev</p>
-                            </button>
-                            <button
-                              className="flip"
-                              onClick={() => {
-                                setFlip(!flip);
-                                setChangePhoto(false);
-                                setIsVisible(false);
-                              }}
-                            >
-                              <img src={FlipIcon} alt="" />
-                              <p>Flip</p>
-                            </button>
-                            <button className="rotate" onClick={() => { handleRotate(90); setIsVisible(false); }}>
-                              <img src={RotateIcon} alt="" />
-                              <p>Rotate</p>
-                            </button>
-                            <button
-                              className="change"
-                              onClick={() => {
-                                setChangePhoto(!changePhoto);
-                                setFlip(false);
-                                setIsVisible(false);
-                              }}
-                            >
-                              <img src={GalleryIcon} alt="" />
-                              <p>Change Photo</p>
-                            </button>
-                            <button className="next" onClick={() => { setShapes(true) }}>
-                              <img src={NextIcon} alt="" />
-                              <p>Next</p>
-                            </button>
-                          </div>}
+                    ) : texts ? (
+                      <div className="actions size-slider">
+                        <button
+                          className="prev"
+                          onClick={() => {
+                            setShapes(true);
+                          }}
+                        >
+                          <img src={PrevIcon} alt="" />
+                          <p>Prev</p>
+                        </button>
+                        <button className="crop" onClick={handleTextFrame}>
+                          <img src={FontIcon} alt="" />
+                          <p>Font</p>
+                        </button>
+                        <button className="rotate square">
+                          <img src={TextEffectsIcon} alt="" />
+                          <p>Effects</p>
+                        </button>
+                        <button
+                          className="next"
+                          onClick={() => {
+                            setModalOpen(true);
+                            setDownload(true);
+                            setTexts(false);
+                            setShapes(false);
+                          }}
+                        >
+                          <img src={NextIcon} alt="" />
+                          <p>Next</p>
+                        </button>
+                      </div>
+                    ) : download ? (
+                      <div className="actions size-slider empty-div"></div>
+                    ) : (
+                      <div className="actions size-slider">
+                        <button
+                          className="prev"
+                          onClick={() => {
+                            setFile(null);
+                            setPreviewUrl(null);
+                            setCroppedImageUrl(null);
+                            setFrames([]);
+                          }}
+                        >
+                          <img src={PrevIcon} alt="" />
+                          <p>Prev</p>
+                        </button>
+                        <button
+                          className="flip"
+                          onClick={() => {
+                            setFlip(!flip);
+                            setChangePhoto(false);
+                            setIsVisible(false);
+                          }}
+                        >
+                          <img src={FlipIcon} alt="" />
+                          <p>Flip</p>
+                        </button>
+                        <button
+                          className="rotate"
+                          onClick={() => {
+                            handleRotate(90);
+                            setIsVisible(false);
+                          }}
+                        >
+                          <img src={RotateIcon} alt="" />
+                          <p>Rotate</p>
+                        </button>
+                        <button
+                          className="change"
+                          onClick={() => {
+                            setChangePhoto(!changePhoto);
+                            setFlip(false);
+                            setIsVisible(false);
+                          }}
+                        >
+                          <img src={GalleryIcon} alt="" />
+                          <p>Change Photo</p>
+                        </button>
+                        <button
+                          className="next"
+                          onClick={() => {
+                            setShapes(true);
+                          }}
+                        >
+                          <img src={NextIcon} alt="" />
+                          <p>Next</p>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div className={`gallery-images ${isVisible ? '' : 'hidden'}`}>
+                <div className={`gallery-images ${isVisible ? "" : "hidden"}`}>
                   <div className="img-cnt">
                     {galleryImages.map((galleryImage, i) => (
-                      <div className="img" key={i} onClick={() => setPreviewUrl(galleryImage)}>
+                      <div
+                        className="img"
+                        key={i}
+                        onClick={() => setPreviewUrl(galleryImage)}
+                      >
                         <img src={galleryImage} alt="" />
                       </div>
                     ))}
@@ -751,19 +1064,26 @@ const DashboardEdit: React.FC = () => {
                       <img src={AddIcon} alt="" />
                       <p>Upload</p>
                     </label>
-                    <input type="file" id="galleryInput" style={{ display: 'none', cursor: 'pointer' }} onChange={onFileChange} />
+                    <input
+                      type="file"
+                      id="galleryInput"
+                      style={{ display: "none", cursor: "pointer" }}
+                      onChange={onFileChange}
+                    />
                   </div>
                 </div>
               </div>
-              :
+            ) : (
               <div className="cnt">
                 <div className="img-section">
                   {Array.isArray(errMsg) ? (
                     errMsg.map((error, index) => (
-                      <p key={index}
+                      <p
+                        key={index}
                         ref={index === 0 ? errRef : null}
                         className={errMsg ? "errmsg" : "offscreen"}
-                        aria-live="assertive">
+                        aria-live="assertive"
+                      >
                         {error.msg}
                       </p>
                     ))
@@ -771,13 +1091,17 @@ const DashboardEdit: React.FC = () => {
                     <p
                       ref={errRef}
                       className={errMsg ? "errmsg" : "offscreen"}
-                      aria-live="assertive">
+                      aria-live="assertive"
+                    >
                       {errMsg}
                     </p>
                   )}
                   <div className="import">
                     <div className="gallery">
-                      <label htmlFor="" onClick={() => setIsVisible(!isVisible)}>
+                      <label
+                        htmlFor=""
+                        onClick={() => setIsVisible(!isVisible)}
+                      >
                         <img src={AddIcon} alt="" />
                         <p>Import from Gallery</p>
                       </label>
@@ -787,14 +1111,21 @@ const DashboardEdit: React.FC = () => {
                         <img src={AddIcon} alt="" />
                         <p>Import File</p>
                       </label>
-                      <input type="file" id="fileInput" style={{ display: 'none', cursor: 'pointer' }} onChange={onFileChange} />
+                      <input
+                        type="file"
+                        id="fileInput"
+                        style={{ display: "none", cursor: "pointer" }}
+                        onChange={onFileChange}
+                      />
                     </div>
                   </div>
                 </div>
-                <div className={`gallery-images ${isVisible ? '' : 'hidden'}`}>
+                <div className={`gallery-images ${isVisible ? "" : "hidden"}`}>
                   <div className="img-cnt">
                     {galleryImages.map((galleryImage, i) => (
-                      <div className="img" key={i}
+                      <div
+                        className="img"
+                        key={i}
                         onClick={() => {
                           setPreviewUrl(galleryImage);
                           setIsVisible(false);
@@ -809,15 +1140,21 @@ const DashboardEdit: React.FC = () => {
                       <img src={AddIcon} alt="" />
                       <p>Upload</p>
                     </label>
-                    <input type="file" id="galleryInput" style={{ display: 'none', cursor: 'pointer' }} onChange={onFileChange} />
+                    <input
+                      type="file"
+                      id="galleryInput"
+                      style={{ display: "none", cursor: "pointer" }}
+                      onChange={onFileChange}
+                    />
                   </div>
                 </div>
-              </div>}
+              </div>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default DashboardEdit;
