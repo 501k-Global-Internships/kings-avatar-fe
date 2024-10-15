@@ -20,6 +20,7 @@ import TextEffectsIcon from "../assets/textEffects.svg";
 import NextIcon from "../assets/next.svg";
 import PrevIcon from "../assets/prev.svg";
 import axios from "../api/axios";
+import { toast } from "sonner";
 import {
   ErrorResponse,
   Frame,
@@ -320,6 +321,7 @@ const DashboardEdit: React.FC = () => {
         const shareableLink = `${window.location.origin}/guest/${sharedId}`;
 
         await navigator.clipboard.writeText(shareableLink);
+        toast("Image shared successfully! Link copied to clipboard.");
         alert("Image shared successfully! Link copied to clipboard.");
       } else {
         alert("Error sharing image: " + response.data.message);
